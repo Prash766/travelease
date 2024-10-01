@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import connectDB from './db/db'
 
 const app = express()
 
@@ -9,8 +10,10 @@ app.use(express.urlencoded({
 }))
 app.use(cors())
 
-
-
-app.listen(3000 , ()=>{
-    console.log(`Server is running on 3000 port`)
+connectDB().then(()=>{
+    app.listen(3000 , ()=>{
+        console.log(`Server is running on 3000 port`)
+    })
 })
+
+
