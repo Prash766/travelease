@@ -8,8 +8,12 @@ function App() {
     <>
     <BrowserRouter>
     <Routes>
-      <Route path='/' element={<Layout></Layout>}/>
-      <Route/>
+      <Route path='/' element={<Layout bgTransparent={true}>
+        <p>Home</p>
+      </Layout>}/>
+      <Route path='/booking' element={<Layout bgTransparent={false}><h1>
+        BOOKING THE SITE
+        </h1></Layout>}/>
       <Route/>
 
 

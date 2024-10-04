@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom"
 import {motion} from 'framer-motion'
+interface Prop{
+    bgTransparent : boolean
+}
 
-const Header = ({bgTransparent}) => {
+const Header = ({bgTransparent}: Prop) => {
   
   return (
 
