@@ -10,10 +10,18 @@ app.use(express.urlencoded({
 }))
 app.use(cors())
 
-connectDB().then(()=>{
-    app.listen(3000 , ()=>{
-        console.log(`Server is running on 3000 port`)
-    })
+connectDB()
+
+import UserRouter from './routes/user.routes'
+app.use("/api/v1/users" , UserRouter)
+
+
+
+app.listen(3000 , ()=>{
+    console.log(`Server is running on 3000 port`)
 })
+
+
+
 
 
