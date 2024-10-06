@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser } from "../controller/user.controller";
+import { registerUser , loginUser } from "../controller/user.controller";
 import { check } from "express-validator";
 
 const router = Router();
@@ -17,5 +17,17 @@ router
     ],
     registerUser
   );
+
+  router.route("/login").post(
+    [
+        check("email","Enter Email").isString(),
+        check("password" ,"Password with 6 or more character required")
+
+    ],
+    loginUser
+    
+
+
+  )
 
 export default router;
