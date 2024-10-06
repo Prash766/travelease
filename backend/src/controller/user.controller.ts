@@ -5,53 +5,88 @@ import ApiError from "../utils/ApiError";
 import jwt from "jsonwebtoken";
 import asyncHandler from "../utils/asyncHandler";
 
-
-const registerUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      message: errors.array(),
-    });
-  }
-
-  try {
-    let user = await User.findOne({
-      email: req.body.email,
-    });
-
-    if (user) {
-      return res.status(400).json({ message: "User already exists" });
+const registerUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: errors.array(),
+      });
     }
 
-    user = await User.create(req.body);
-    
-    const token = jwt.sign(
-      {
-        userId: user.id,
-      },
-      process.env.JWT_SECRET_KEY as string,
-      {
-        expiresIn: "1d",
+    try {
+      let user = await User.findOne({
+        email: req.body.email,
+      });
+
+      if (user) {
+        return res.status(400).json({ message: "User already exists" });
       }
-    );
 
-    res.cookie("auth_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 846400000,
-    });
+      user = await User.create(req.body);
 
-    return res.status(200).json({
-      success: true,    
-      message: "User registered successfully",
-    });
-  } catch (error) {
-    console.error(error);
-    if (error instanceof ApiError) {
-      return res.status(400).json({ message: error.message });
+      const token = jwt.sign(
+        {
+          userId: user.id,
+        },
+        process.env.JWT_SECRET_KEY as string,
+        {
+          expiresIn: "1d",
+        }
+      );
+
+      res.cookie("auth_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 846400000,
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "User registered successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      if (error instanceof ApiError) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(500).json({ message: "Something went wrong" });
     }
-    return res.status(500).json({ message: "Something went wrong" });
   }
+);
+
+const loginUser = asyncHandler(async (req, res) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return res.status(400).json({
+      message: error.array(),
+    });
+  }
+  const { email, password } = req.body;
+  const user = await User.findOne({
+    email: email,
+  });
+  if (!user) throw new ApiError("User not Found", 400);
+  if (!user.isPasswordValid(password))
+    throw new ApiError("Invalid Password", 400);
+  const token = jwt.sign(
+    {
+      id: user._id,
+    },
+    process.env.JWT_SECRET_KEY as string,
+    {
+      expiresIn: "1d",
+    }
+  );
+  res.cookie("auth_token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV ==="production",
+    maxAge: 846400000,
+  });
+  return res.status(200).json({
+    success:true,
+    message:"User logged in Successfully"
+  })
 });
 
-export { registerUser };
+export { registerUser, loginUser };
