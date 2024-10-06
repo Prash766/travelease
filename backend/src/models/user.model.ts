@@ -6,7 +6,9 @@ export type UserType={
     email:string,
     password:string,
     firstName:string,
-    lastName:string
+    lastName:string,
+    isPasswordValid(plainPassword: string): Promise<boolean>;
+
 }
 
 
@@ -37,6 +39,14 @@ UserSchema.pre('save' ,async function(next){
 next()
 
 })
+
+UserSchema.methods.isPasswordValid =  function(plainPassword:string){
+ const match = bcrypt.compare(plainPassword , this.password)
+ return match
+}
+
+
+
 
 
 
