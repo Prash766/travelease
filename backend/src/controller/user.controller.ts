@@ -5,6 +5,12 @@ import ApiError from "../utils/ApiError";
 import jwt from "jsonwebtoken";
 import asyncHandler from "../utils/asyncHandler";
 
+const tokenOptions={
+    httpOnly: true,
+    secure: process.env.NODE_ENV ==="production",
+    maxAge: 846400000,
+  }
+
 const registerUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -35,11 +41,7 @@ const registerUser = asyncHandler(
         }
       );
 
-      res.cookie("auth_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 846400000,
-      });
+      res.cookie("auth_token", token, tokenOptions);
 
       return res.status(200).json({
         success: true,
@@ -78,15 +80,24 @@ const loginUser = asyncHandler(async (req, res) => {
       expiresIn: "1d",
     }
   );
-  res.cookie("auth_token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV ==="production",
-    maxAge: 846400000,
-  });
+  res.cookie("auth_token", token, tokenOptions);
   return res.status(200).json({
     success:true,
-    message:"User logged in Successfully"
+    message:"User logged in Successfully",
+    userId: user._id
   })
 });
 
-export { registerUser, loginUser };
+const authCheck = asyncHandler(async(req , res , next)=>{
+  return res.status(200).send({
+    userId: req.user
+  })
+})
+
+
+
+export { 
+    registerUser, 
+    loginUser,
+    authCheck
+ };
