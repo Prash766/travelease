@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { Link, replace, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Loader, PlaneTakeoff } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as apiClient from "../api-client";
 import { useAppContext } from "../contexts/AppContext";
 import { AxiosError } from "axios";
@@ -17,6 +17,7 @@ export type SignUpFormData = {
 
 export default function SignUp() {
     const {showToast} = useAppContext()
+    const queryClient  = useQueryClient()
     const navigate = useNavigate()
   const {
     register,
@@ -26,7 +27,10 @@ export default function SignUp() {
   } = useForm<SignUpFormData>();
   const mutation = useMutation({
     mutationFn: apiClient.signUp,
-    onSuccess: () => {
+    onSuccess:async () => {
+      await queryClient.invalidateQueries({
+        queryKey:["validateUser"]
+      })
         showToast({message:"Registration Success!" , type:"SUCCESS"})
         navigate('/' , {replace:true})
     },

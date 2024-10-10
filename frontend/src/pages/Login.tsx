@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Loader, PlaneTakeoff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as apiClient from "../api-client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppContext } from "../contexts/AppContext";
 import { AxiosError } from "axios";
 
@@ -14,11 +14,16 @@ export type SignInForm = {
 
 export default function Login() {
   const { showToast } = useAppContext();
+  const queryClient = useQueryClient()
   const navigate = useNavigate();
   const { register, handleSubmit, formState: {errors} } = useForm<SignInForm>();
   const mutation = useMutation({
     mutationFn: apiClient.signIn,
     onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["validateUser"]
+      })
+
       showToast({ message: "Logged In Successfully", type: "SUCCESS" });
       navigate("/", { replace: true });
     },

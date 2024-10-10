@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import {motion} from 'framer-motion'
 import { useAppContext } from "../contexts/AppContext"
+import SignOutButton from "./SignOutButton"
 interface Prop{
     bgTransparent : boolean
 }
@@ -28,7 +29,8 @@ const Header = ({bgTransparent}: Prop) => {
               {isVerified? <>                
             <Link to='/login' className="flex text-black font-semibold justify-center items-center px-5 p-3 bg-white  rounded-lg hover:bg-slate-100">My Bookings</Link>
             <Link to='/signup' className="flex text-black font-semibold justify-center items-center px-4 bg-white  rounded-lg hover:bg-slate-100">My Hotels</Link>   
-            <Link to='/signup' className="flex text-black font-semibold justify-center items-center px-4 bg-white  rounded-lg hover:bg-slate-100">Sign Out</Link>   
+            <SignOutButton/>
+
               </> : (
               <>              
             <Link to='/login' className="flex text-black font-semibold justify-center items-center px-5 p-3 bg-white  rounded-lg hover:bg-slate-100">Login</Link>
