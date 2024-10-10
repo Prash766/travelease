@@ -13,11 +13,16 @@ import { SignInForm } from "./pages/Login";
 
 export const signIn = async(formData:SignInForm)=>{
     const res = await axiosClient.post('/users/login' , formData)
-    console.log(res)
     if(res.status!==200){
-        console.log(res)
         throw new Error(res.data.message)
 
+    }
+    return res.data
+}
+export const logOut = async()=>{
+    const res = await axiosClient.get('/users/logout')
+    if(res.status!==200){
+        throw new Error(res.data.message)
     }
     return res.data
 }
