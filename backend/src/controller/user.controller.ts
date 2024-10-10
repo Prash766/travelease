@@ -95,9 +95,23 @@ const authCheck = asyncHandler(async(req , res , next)=>{
 })
 
 
+const logOutUser = asyncHandler(async(req , res)=>{
+  res.cookie("auth_token", "", {
+    httpOnly:true,
+    secure: process.env.NODE_ENV ==="production",
+    maxAge:0,
+
+    
+  })
+return res.status(200).json({
+  message :"Logged out Successfully"
+})
+})
+
 
 export { 
     registerUser, 
     loginUser,
-    authCheck
+    authCheck,
+    logOutUser
  };
