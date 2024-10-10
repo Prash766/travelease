@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom"
 import {motion} from 'framer-motion'
+import { useAppContext } from "../contexts/AppContext"
 interface Prop{
     bgTransparent : boolean
 }
 
 const Header = ({bgTransparent}: Prop) => {
+  const {isVerified} = useAppContext()
   
   return (
 
@@ -13,9 +15,7 @@ const Header = ({bgTransparent}: Prop) => {
         <div className="container mx-auto flex justify-between items-center">
           <motion.h1 
             className="text-4xl font-bold"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+       
           >
             TravelEase
           </motion.h1>
@@ -25,8 +25,19 @@ const Header = ({bgTransparent}: Prop) => {
               initial="initial"
               animate="animate"
             >
+              {isVerified? <>                
+            <Link to='/login' className="flex text-black font-semibold justify-center items-center px-5 p-3 bg-white  rounded-lg hover:bg-slate-100">My Bookings</Link>
+            <Link to='/signup' className="flex text-black font-semibold justify-center items-center px-4 bg-white  rounded-lg hover:bg-slate-100">My Hotels</Link>   
+            <Link to='/signup' className="flex text-black font-semibold justify-center items-center px-4 bg-white  rounded-lg hover:bg-slate-100">Sign Out</Link>   
+              </> : (
+              <>              
             <Link to='/login' className="flex text-black font-semibold justify-center items-center px-5 p-3 bg-white  rounded-lg hover:bg-slate-100">Login</Link>
-            <Link to='/sign-up' className="flex text-black font-semibold justify-center items-center px-4 bg-white  rounded-lg hover:bg-slate-100">Signup</Link>            </motion.ul>
+            <Link to='/signup' className="flex text-black font-semibold justify-center items-center px-4 bg-white  rounded-lg hover:bg-slate-100">Signup</Link>   
+              </>
+              )}
+          
+            </motion.ul>
+              
           </nav>
         </div>
       </header>

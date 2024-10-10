@@ -69,8 +69,8 @@ const loginUser = asyncHandler(async (req, res) => {
     email: email,
   });
   if (!user) throw new ApiError("User not Found", 400);
-  if (!user.isPasswordValid(password))
-    throw new ApiError("Invalid Password", 400);
+  const validPwd =await user.isPasswordValid(password)
+  if (!validPwd) throw new ApiError("Invalid Password", 400);
   const token = jwt.sign(
     {
       id: user._id,

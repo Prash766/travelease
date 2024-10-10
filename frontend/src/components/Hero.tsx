@@ -2,16 +2,14 @@ import { motion } from "framer-motion";
 
 const Hero = () => {
   const fadeInUp = {
-    initial: { opacity: 0, y: 20, transition: { duration: 0.5 } },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    initial: { opacity: 0, y: 70, transition: { duration: 1 } },
+    animate: { opacity: 1, y: 0, transition: { duration: 1 } },
   };
 
   return (
     <motion.section
       className="relative h-screen  flex items-center justify-center text-white "
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+   
     >
       <div
         className="absolute inset-0 bg-cover  bg-center z-0"

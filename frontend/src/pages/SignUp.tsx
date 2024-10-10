@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, replace, useNavigate } from "react-router-dom";
 import { Loader, PlaneTakeoff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import * as apiClient from "../api-client";
+import { useAppContext } from "../contexts/AppContext";
+import { AxiosError } from "axios";
 
 export type SignUpFormData = {
   firstName: string;
@@ -14,6 +16,8 @@ export type SignUpFormData = {
 };
 
 export default function SignUp() {
+    const {showToast} = useAppContext()
+    const navigate = useNavigate()
   const {
     register,
     watch,
@@ -23,10 +27,17 @@ export default function SignUp() {
   const mutation = useMutation({
     mutationFn: apiClient.signUp,
     onSuccess: () => {
-      console.log("registration success");
+        showToast({message:"Registration Success!" , type:"SUCCESS"})
+        navigate('/' , {replace:true})
     },
-    onError: (error: Error) => {
-      console.log(error.message);
+    onError: (error:AxiosError) => {
+        if (error.response && error.response.data) {
+            const message = (error.response.data as { message: string }).message;
+            showToast({ message, type: "ERROR" });
+          } else {
+            showToast({ message: "An unknown error occurred", type: "ERROR" });
+          }
+        
     },
   });
 
@@ -145,7 +156,7 @@ export default function SignUp() {
                     required: "This field is required",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "invalid email address",
+                      message: "Invalid email address",
                     },
                   })}
                   placeholder="john.doe@example.com"
