@@ -1,1 +1,5 @@
 MONGODB_URL= your own connection string
+JWT_SECRET_KEY= enter jwt security key
+FRONTEND_URL = **mention the frontend url**
+
+
