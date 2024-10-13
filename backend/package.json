@@ -5,15 +5,16 @@
   "main": "./src/index.ts",
   "scripts": {
     "dev": "nodemon",
-    "build":"npm install &&  npx tsc",
-    "start":"node ./dist/index.js",
-    "e2e":"cross-env DOTENV_CONFIG_PATH=.env.e2e nodemon"
+    "build": "npm install &&  npx tsc",
+    "start": "node ./dist/index.js",
+    "e2e": "cross-env DOTENV_CONFIG_PATH=.env.e2e nodemon"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
     "connect": "^3.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -23,7 +24,8 @@
     "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.9.0",
-    "mongoose": "^8.7.0"
+    "mongoose": "^8.7.0",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -31,6 +33,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^1.4.12",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
