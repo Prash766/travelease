@@ -2,8 +2,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+import { useAppContext } from "./contexts/AppContext";
+import AddHotels from "./pages/AddHotel";
 
 function App() {
+  const {isVerified} = useAppContext()
   return (
     <>
       <BrowserRouter>
@@ -24,8 +28,16 @@ function App() {
               </Layout>
             }
           />
+          {isVerified && <>
+          <Route path="/add-hotel" element={
+            <Layout bgTransparent={false}>  
+            <AddHotels/>
+            </Layout>
+            }/>
+          </>}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>
