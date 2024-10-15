@@ -1,81 +1,67 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Wifi, Tv, Car, Dumbbell, Utensils, Coffee, Wind, Waves, Mountain, PawPrint, Sun, ChevronLeft, ChevronRight, Star } from 'lucide-react'
-import { useFormContext } from 'react-hook-form'
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useFormContext } from "react-hook-form";
+import StarRatings from "./StarRatings";
+import FacilityType from "./FacilityType";
 
 type HotelFormType = {
-  name: string
-  city: string
-  country: string
-  description: string
-  type: string
-  pricePerNight: number
+  name: string;
+  city: string;
+  country: string;
+  description: string;
+  type: string;
+  pricePerNight: number;
+  starRating: number;
+  facilities: string[];
+  adultCount: number;
+  childCount: number;
+  imageUrls: FileList | null;
+};
+
+export type HotelOtherType = {
   starRating: number
   facilities: string[]
-  adultCount: number
-  childCount: number
-  imageUrls: FileList | null
-}
+  pricePerNight:string
+};
 
-const hotelTypes = ['Resort', 'Hotel', 'Apartment', 'Villa', 'Hostel']
-
-const predefinedFacilities = [
-  { name: 'Wi-Fi', icon: Wifi },
-  { name: 'TV', icon: Tv },
-  { name: 'Parking', icon: Car },
-  { name: 'Gym', icon: Dumbbell },
-  { name: 'Restaurant', icon: Utensils },
-  { name: 'Room Service', icon: Coffee },
-  { name: 'Air Conditioning', icon: Wind },
-  { name: 'Beach Access', icon: Waves },
-  { name: 'Mountain View', icon: Mountain },
-  { name: 'Pet-friendly', icon: PawPrint },
-  { name: 'Pool', icon: Sun },
-]
+const hotelTypes = ["Resort", "Hotel", "Apartment", "Villa", "Hostel"];
 
 export default function HotelDetailsSection() {
-    const {register} = useFormContext<HotelFormType>()
-  const [formData, setFormData] = useState<HotelFormType>({
-    name: 'Sunset Beach Resort',
-    city: 'Malibu',
-    country: 'United States',
-    description: 'Experience luxury and relaxation at our beachfront resort. Enjoy stunning ocean views, world-class amenities, and impeccable service.',
-    type: 'Resort',
-    pricePerNight: 350,
-    starRating: 5,
-    facilities: ['Wi-Fi', 'TV', 'Pool'],
-    adultCount: 2,
-    childCount: 1,
-    imageUrls: null
-  })
+  const { register } = useFormContext<HotelFormType>();
+  const [formData, setFormData] = useState<HotelOtherType>({
+    starRating: 0,
+    facilities: [""],
+    pricePerNight: "0"
+    
+  });
 
-  const [images, setImages] = useState<string[]>([])
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const handleStars = (star: number) => {
+    setFormData((prev: HotelOtherType) => ({
+      ...prev,
+      starRating: star,
+    }));
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
 
- 
+
   const handleFacilityToggle = (facility: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       facilities: prev.facilities.includes(facility)
-        ? prev.facilities.filter(f => f !== facility)
-        : [...prev.facilities, facility]
-    }))
-  }
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files) {
-      setFormData(prev => ({ ...prev, imageUrls: files }))
-      setImages(Array.from(files).map(file => URL.createObjectURL(file)))
-    }
-  }
+        ? prev.facilities.filter((f) => f !== facility)
+        : [...prev.facilities, facility],
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log(formData)
-  }
+    e.preventDefault();
+    console.log(formData);
+  };
 
   return (
     <div className="mt-20  min-h-screen flex items-center justify-center p-4">
@@ -91,73 +77,87 @@ export default function HotelDetailsSection() {
         <form onSubmit={handleSubmit} className="p-6 md:p-8 lg:p-10 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <label htmlFor="name" className="text-lg font-semibold block">Hotel Name</label>
+              <label htmlFor="name" className="text-lg font-semibold block">
+                Hotel Name
+              </label>
               <input
                 type="text"
                 id="name"
                 required
-                {...register("name", {required:"Enter the Name"})}
+                {...register("name", { required: "Enter the Name" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="type" className="text-lg font-semibold block">Hotel Type</label>
+              <label htmlFor="type" className="text-lg font-semibold block">
+                Hotel Type
+              </label>
               <select
                 id="type"
                 required
-                {...register("type", {required:"Enter the Name"})}
+                {...register("type", { required: "Enter the Name" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               >
-                {hotelTypes.map(type => (
-                  <option 
-                  key={type}
-                
-                  value={type}>{type}</option>
+                {hotelTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
                 ))}
               </select>
             </div>
             <div className="space-y-2">
-              <label htmlFor="country" className="text-lg font-semibold block">Country</label>
+              <label htmlFor="country" className="text-lg font-semibold block">
+                Country
+              </label>
               <input
                 type="text"
                 id="country"
-                {...register("country", {required:"Enter the Country"})}
+                {...register("country", { required: "Enter the Country" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="city" className="text-lg font-semibold block">City</label>
+              <label htmlFor="city" className="text-lg font-semibold block">
+                City
+              </label>
               <input
                 type="text"
                 id="city"
-                value={formData.city}
-                {...register("city" ,{required:"Enter the City"})}
+                {...register("city", { required: "Enter the City" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="adultCount" className="text-lg font-semibold block">Max Adults</label>
+              <label
+                htmlFor="adultCount"
+                className="text-lg font-semibold block"
+              >
+                Max Adults
+              </label>
               <input
                 type="number"
                 id="adultCount"
-                value={formData.adultCount}
                 required
                 min="1"
-                {...register("adultCount" ,{required:"Enter the City"})}
-
+                {...register("adultCount", { required: "Enter the City" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="childCount" className="text-lg font-semibold block">Max Children</label>
+              <label
+                htmlFor="childCount"
+                className="text-lg font-semibold block"
+              >
+                Max Children
+              </label>
               <input
                 type="number"
                 id="childCount"
-                value={formData.childCount}
                 required
                 min="0"
-                {...register("childCount" ,{required:"Enter the Child Count"})}
-
+                {...register("childCount", {
+                  required: "Enter the Child Count",
+                })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
             </div>
@@ -165,124 +165,64 @@ export default function HotelDetailsSection() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label htmlFor="description" className="text-lg font-semibold block">Description</label>
+              <label
+                htmlFor="description"
+                className="text-lg font-semibold block"
+              >
+                Description
+              </label>
               <textarea
                 id="description"
-                value={formData.description}
-                {...register("city" ,{required:"Enter the Hotel Description"})}
-
+                {...register("city", {
+                  required: "Enter the Hotel Description",
+                })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors min-h-[150px]"
               ></textarea>
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="pricePerNight" className="text-lg font-semibold block">Price per Night ($)</label>
+                <label
+                  htmlFor="pricePerNight"
+                  className="text-lg font-semibold block"
+                >
+                  Price per Night ₹{formData.pricePerNight}
+                </label>
                 <input
                   type="range"
                   id="pricePerNight"
+                  name="pricePerNight"
                   min="0"
-                  max="1000"
-                  step="10"
+                  max="100000"
+                  step="500"
                   value={formData.pricePerNight}
-                  {...register("pricePerNight", {required:""})}
+                  onChange={handleInputChange}
                   className="w-full"
                 />
-                <div className="text-center font-semibold text-lg">${formData.pricePerNight}</div>
+                <div className="text-center font-semibold text-lg"></div>
               </div>
-              <div className="space-y-2">
-                <label htmlFor="starRating" className="text-lg font-semibold block">Star Rating</label>
-                <div className="flex justify-between items-center text-4xl">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <motion.button
-                      key={star}
-                      type="button"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => setFormData(prev => ({ ...prev, starRating: star }))}
-                      className={`cursor-pointer ${formData.starRating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
-                    >
-                      <Star fill={`${formData.starRating >= star ? '#FFFF00' : '#808080'}`} />
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
+              <StarRatings handleStar={handleStars} formData={formData} />
             </div>
           </div>
-
-          <div className="space-y-4">
-            <label className="text-lg font-semibold block">Facilities</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {predefinedFacilities.map((facility) => (
-                <motion.button
-                  key={facility.name}
-                  type="button"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleFacilityToggle(facility.name)}
-                  className={`p-4 rounded-lg flex flex-col items-center justify-center space-y-2 transition-colors ${
-                    formData.facilities.includes(facility.name)
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  <facility.icon className="w-6 h-6" />
-                  <span className="text-sm font-medium">{facility.name}</span>
-                </motion.button>
-              ))}
-            </div>
-          </div>
+          <FacilityType
+            handleFacilityToggle={handleFacilityToggle}
+            formData={formData}
+          />
 
           <div className="space-y-2">
-            <label htmlFor="imageUrls" className="text-lg font-semibold block">Images</label>
+            <label htmlFor="imageUrls" className="text-lg font-semibold block">
+              Images
+            </label>
             <input
               type="file"
               id="imageUrls"
-              name="imageUrls"
-              onChange={handleImageUpload}
               multiple
               accept="image/*"
-              required
+              {...register("imageUrls", {
+                required: "Select Images for Your Hotels",
+              })}
               className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
             />
           </div>
-
-          <AnimatePresence>
-            {images.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="relative w-full h-80 bg-gray-200 rounded-lg overflow-hidden"
-              >
-                <img
-                  src={images[currentImageIndex]}
-                  alt={`Preview ${currentImageIndex + 1}`}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-between p-4">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)}
-                    className="bg-white bg-opacity-50 hover:bg-opacity-75 transition-colors p-2 rounded-full"
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setCurrentImageIndex((prev) => (prev + 1) % images.length)}
-                    className="bg-white bg-opacity-50 hover:bg-opacity-75 transition-colors p-2 rounded-full"
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </motion.button>
-                </div>
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-full text-sm">
-                  {currentImageIndex + 1} / {images.length}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           <motion.button
             type="submit"
@@ -295,5 +235,5 @@ export default function HotelDetailsSection() {
         </form>
       </motion.div>
     </div>
-  )
+  );
 }
