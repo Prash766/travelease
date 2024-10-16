@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
@@ -29,7 +27,7 @@ export type HotelOtherType = {
 const hotelTypes = ["Resort", "Hotel", "Apartment", "Villa", "Hostel"];
 
 export default function HotelDetailsSection() {
-  const { register } = useFormContext<HotelFormType>();
+  const { register ,handleSubmit ,  formState:{errors} } = useFormContext<HotelFormType>();
   const [formData, setFormData] = useState<HotelOtherType>({
     starRating: 0,
     facilities: [""],
@@ -58,10 +56,14 @@ export default function HotelDetailsSection() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+  const onSubmit =  handleSubmit((data, e)=>{
+    e?.preventDefault()
+    const newData = {
+        ...data,
+        ...formData
+    }
+    console.log(newData)
+})
 
   return (
     <div className="mt-20  min-h-screen flex items-center justify-center p-4">
@@ -74,7 +76,7 @@ export default function HotelDetailsSection() {
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
           <h1 className="text-3xl font-bold text-center">Hotel Registration</h1>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 md:p-8 lg:p-10 space-y-8">
+        <form onSubmit={onSubmit} className="p-6 md:p-8 lg:p-10 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="space-y-2">
               <label htmlFor="name" className="text-lg font-semibold block">
@@ -83,10 +85,18 @@ export default function HotelDetailsSection() {
               <input
                 type="text"
                 id="name"
-                required
                 {...register("name", { required: "Enter the Name" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
+              {
+                errors.name && (
+                    <span className="text-red-600">
+                        {
+                            errors.name.message
+                        }
+                    </span>
+                )
+              }
             </div>
             <div className="space-y-2">
               <label htmlFor="type" className="text-lg font-semibold block">
@@ -104,6 +114,15 @@ export default function HotelDetailsSection() {
                   </option>
                 ))}
               </select>
+              {
+                errors.type && (
+                    <span className="text-red-600">
+                        {
+                            errors.type.message
+                        }
+                    </span>
+                )
+              }
             </div>
             <div className="space-y-2">
               <label htmlFor="country" className="text-lg font-semibold block">
@@ -126,6 +145,15 @@ export default function HotelDetailsSection() {
                 {...register("city", { required: "Enter the City" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
+                {
+                errors.city && (
+                    <span className="text-red-600">
+                        {
+                            errors.city.message
+                        }
+                    </span>
+                )
+              }
             </div>
             <div className="space-y-2">
               <label
@@ -142,6 +170,15 @@ export default function HotelDetailsSection() {
                 {...register("adultCount", { required: "Enter the City" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
+                {
+                errors.adultCount && (
+                    <span className="text-red-600">
+                        {
+                            errors.adultCount.message
+                        }
+                    </span>
+                )
+              }
             </div>
             <div className="space-y-2">
               <label
@@ -160,6 +197,15 @@ export default function HotelDetailsSection() {
                 })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
+                {
+                errors.childCount && (
+                    <span className="text-red-600">
+                        {
+                            errors.childCount.message
+                        }
+                    </span>
+                )
+              }
             </div>
           </div>
 
@@ -172,12 +218,22 @@ export default function HotelDetailsSection() {
                 Description
               </label>
               <textarea
-                id="description"
-                {...register("city", {
-                  required: "Enter the Hotel Description",
+                {...register("description", {
+                  required: "Enter the Description",
                 })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors min-h-[150px]"
-              ></textarea>
+              >
+
+              </textarea>
+              {
+                errors.description && (
+                    <span className="text-red-600">
+                        {
+                            errors.description.message
+                        }
+                    </span>
+                )
+              }
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -192,7 +248,7 @@ export default function HotelDetailsSection() {
                   id="pricePerNight"
                   name="pricePerNight"
                   min="0"
-                  max="100000"
+                  max="10000"
                   step="500"
                   value={formData.pricePerNight}
                   onChange={handleInputChange}
@@ -222,6 +278,15 @@ export default function HotelDetailsSection() {
               })}
               className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
             />
+              {
+                errors.imageUrls && (
+                    <span className="text-red-600">
+                        {
+                            errors.imageUrls.message
+                        }
+                    </span>
+                )
+              }
           </div>
 
           <motion.button

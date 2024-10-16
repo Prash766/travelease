@@ -19,9 +19,7 @@ const ManageHotelForm = () => {
   const formMethods = useForm<HotelFormType>();
   return (
     <FormProvider {...formMethods}>
-      <form>
         <HotelDetailsSection />
-      </form>
     </FormProvider>
   );
 };

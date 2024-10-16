@@ -24,6 +24,7 @@ const StarRatings = ({handleStar , formData}: PropType) => {
         </motion.button>
       ))}
     </div>
+      {formData.starRating===0? <div className='mt-4 text-red-500 text-sm'>Select the Star Rating</div>: null}
   </div>
   )
 }
