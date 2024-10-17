@@ -19,6 +19,22 @@ export const signIn = async(formData:SignInForm)=>{
     }
     return res.data
 }
+
+export const addHotel = async(hotelFormData: FormData)=>{
+    const res = await axiosClient.post('/hotels/add',hotelFormData , {
+        headers:{
+            "Content-Type":"multipart/form-data"
+        }
+    
+    })
+    if(res.status!==200){
+        throw new Error(res.data.message)
+    }
+    return res.data
+
+
+
+}
 export const logOut = async()=>{
     const res = await axiosClient.get('/users/logout')
     if(res.status!==200){
