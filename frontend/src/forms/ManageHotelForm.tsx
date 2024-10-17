@@ -15,11 +15,16 @@ export type HotelFormType = {
   imageUrls: FileList;
 };
 
-const ManageHotelForm = () => {
+type Props={
+  onSave :(hotelFormData: FormData) => void;
+  isPending: boolean
+}
+
+const ManageHotelForm = ({onSave , isPending}: Props) => {
   const formMethods = useForm<HotelFormType>();
   return (
     <FormProvider {...formMethods}>
-        <HotelDetailsSection />
+        <HotelDetailsSection onSave = {onSave}  isPending = {isPending}/>
     </FormProvider>
   );
 };

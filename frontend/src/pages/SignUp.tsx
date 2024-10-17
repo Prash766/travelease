@@ -228,7 +228,7 @@ export default function SignUp() {
                 disabled={mutation.isPending}
                 className={`w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
                   mutation.isPending ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                }`} 
               >
                 {mutation.isPending && !mutation.error ? (
                   <div className="flex justify-center items-center space-x-2">

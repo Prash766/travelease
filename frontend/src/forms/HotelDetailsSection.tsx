@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
 import StarRatings from "./StarRatings";
 import FacilityType from "./FacilityType";
+import { Loader } from "lucide-react";
 
 type HotelFormType = {
   name: string;
@@ -15,7 +16,7 @@ type HotelFormType = {
   facilities: string[];
   adultCount: number;
   childCount: number;
-  imageUrls: FileList | null;
+  imageFiles: FileList | null;
 };
 
 export type HotelOtherType = {
@@ -25,12 +26,16 @@ export type HotelOtherType = {
 };
 
 const hotelTypes = ["Resort", "Hotel", "Apartment", "Villa", "Hostel"];
+type Props={
+    onSave :(hotelFormData: FormData) => void;
+    isPending: boolean
+  }
 
-export default function HotelDetailsSection() {
+export default function HotelDetailsSection({onSave , isPending}: Props) {
   const { register ,handleSubmit ,  formState:{errors} } = useFormContext<HotelFormType>();
   const [formData, setFormData] = useState<HotelOtherType>({
     starRating: 0,
-    facilities: [""],
+    facilities: [],
     pricePerNight: "0"
     
   });
@@ -63,6 +68,25 @@ export default function HotelDetailsSection() {
         ...formData
     }
     console.log(newData)
+    const formDataJson = new FormData();
+    formDataJson.append("name" , newData.name)
+    formDataJson.append("city" , newData.city)
+    formDataJson.append("country" , newData.country)
+    formDataJson.append("description" , newData.description)
+    formDataJson.append("type" , newData.type)
+    formDataJson.append("pricePerNight" , newData.pricePerNight)
+    formDataJson.append("starRating" , newData.starRating.toString())
+    formDataJson.append("adultCount" , newData.adultCount.toString())
+    formDataJson.append("childCount" , newData.childCount.toString())
+    newData.facilities.forEach((facility ,index)=>{
+        formDataJson.append(`facilities[${index}]` ,facility)
+    })
+    Array.from(newData.imageFiles as FileList).forEach((imageFile)=>{
+        formDataJson.append('imageFiles', imageFile)
+    })
+    console.log(formDataJson)
+
+    onSave(formDataJson)
 })
 
   return (
@@ -134,6 +158,15 @@ export default function HotelDetailsSection() {
                 {...register("country", { required: "Enter the Country" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
+               {
+                errors.country && (
+                    <span className="text-red-600">
+                        {
+                            errors.country.message
+                        }
+                    </span>
+                )
+              }
             </div>
             <div className="space-y-2">
               <label htmlFor="city" className="text-lg font-semibold block">
@@ -165,9 +198,8 @@ export default function HotelDetailsSection() {
               <input
                 type="number"
                 id="adultCount"
-                required
                 min="1"
-                {...register("adultCount", { required: "Enter the City" })}
+                {...register("adultCount", { required: "Enter the Adult Count" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
                 {
@@ -190,7 +222,6 @@ export default function HotelDetailsSection() {
               <input
                 type="number"
                 id="childCount"
-                required
                 min="0"
                 {...register("childCount", {
                   required: "Enter the Child Count",
@@ -265,24 +296,24 @@ export default function HotelDetailsSection() {
           />
 
           <div className="space-y-2">
-            <label htmlFor="imageUrls" className="text-lg font-semibold block">
+            <label htmlFor="imageFiles" className="text-lg font-semibold block">
               Images
             </label>
             <input
               type="file"
-              id="imageUrls"
+              id="imageFiles"
               multiple
               accept="image/*"
-              {...register("imageUrls", {
+              {...register("imageFiles", {
                 required: "Select Images for Your Hotels",
               })}
               className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
             />
               {
-                errors.imageUrls && (
+                errors.imageFiles && (
                     <span className="text-red-600">
                         {
-                            errors.imageUrls.message
+                            errors.imageFiles.message
                         }
                     </span>
                 )
@@ -293,9 +324,19 @@ export default function HotelDetailsSection() {
             type="submit"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300"
+            disabled= {isPending}
+            className={`w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300
+                ${isPending ? "opacity-50 cursor-not-allowed" : ""}
+                `}
           >
-            Register Hotel
+            {isPending  ? (
+                  <div className="flex justify-center items-center space-x-2">
+                    <Loader className="animate-spin" />
+                    <span>Adding Hotel...</span>
+                  </div>
+                ) : (
+                  "Register Hotel"
+                )}
           </motion.button>
         </form>
       </motion.div>
