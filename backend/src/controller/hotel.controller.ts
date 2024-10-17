@@ -4,9 +4,9 @@ import { uploadCloudinary } from "../utils/cloudinary";
 
 const addHotel = asyncHandler(async(req , res)=>{
     try {
-        const hotelImages = req.files as Express.Multer.File[]
+        const imageFiles = req.files as Express.Multer.File[]
         const hotelInfo: HotelType = req.body
-       const uploadUrls =  hotelImages.map(async (image)=>{
+       const uploadUrls =  imageFiles.map(async (image)=>{
         if(image?.path){
 
             const res = await uploadCloudinary(image.path)
@@ -17,16 +17,11 @@ const addHotel = asyncHandler(async(req , res)=>{
         const imageUrls = await Promise.all(uploadUrls)
         
         hotelInfo.imageUrls= imageUrls as string[]
+        console.log(req.user)
         hotelInfo.userId = req.user
         const hotel = new Hotel(hotelInfo)
         await hotel.save()
-        
-        
-
-
-
-
-
+    
         return res.json({
             message:"Working"
         })

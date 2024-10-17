@@ -73,7 +73,7 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!validPwd) throw new ApiError("Invalid Password", 400);
   const token = jwt.sign(
     {
-      id: user._id,
+      userId: user._id,
     },
     process.env.JWT_SECRET_KEY as string,
     {
