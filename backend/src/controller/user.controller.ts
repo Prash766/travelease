@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import asyncHandler from "../utils/asyncHandler";
 
 const tokenOptions={
+  path:'/',
     httpOnly: true,
     secure: process.env.NODE_ENV ==="production",
     maxAge: 846400000,
