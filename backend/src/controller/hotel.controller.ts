@@ -1,3 +1,4 @@
+import { MongooseError } from "mongoose";
 import Hotel, { HotelType } from "../models/hotel.model";
 import asyncHandler from "../utils/asyncHandler";
 import { uploadCloudinary } from "../utils/cloudinary";
@@ -38,7 +39,26 @@ const addHotel = asyncHandler(async(req , res)=>{
     }
 })
 
+const getHotelsOfUser = asyncHandler(async(req , res)=>{
+ try {
+       const hotels= await Hotel.find({userId:req.user})
+       res.json({
+           hotels,
+           message:"All the hotels"
+       })
+ } catch (error:any) {
+    console.log(error)
+    res.json({
+        success:false,
+        message:error.message
+    })
+    
+ }
+
+})
+
 
 export {
-    addHotel
+    addHotel,
+    getHotelsOfUser
 }

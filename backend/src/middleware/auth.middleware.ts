@@ -22,7 +22,6 @@ const validateToken = asyncHandler(async (req, res, next) => {
     if (!decodedToken) {
       throw new ApiError("Invalid Token or Token Has Expired", 400);
     }
-console.log(decodedToken)
     req.user = (decodedToken as JwtPayload).userId;
 
     next();
