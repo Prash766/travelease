@@ -5,6 +5,10 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { useAppContext } from "./contexts/AppContext";
 import AddHotels from "./pages/AddHotel";
+import MyHotel from "./pages/MyHotels";
+import { Suspense } from "react";
+import ErrorBoundary from "./components/ErrorBoundary";
+import MyHotelsSkeleton from "./components/MyHotelsSkeleton";
 
 function App() {
   const {isVerified} = useAppContext()
@@ -21,10 +25,18 @@ function App() {
             }
           />
           <Route
-            path="/booking"
+            path="/myBookings"
             element={
               <Layout bgTransparent={false}>
-                <h1>BOOKING THE SITE</h1>
+                <h1 className="mt=80">BOOKING THE SITE</h1>
+              </Layout>
+            }
+          />
+           <Route
+            path="/myHotels"
+            element={
+              <Layout bgTransparent={false}>
+                <MyHotel/>
               </Layout>
             }
           />
