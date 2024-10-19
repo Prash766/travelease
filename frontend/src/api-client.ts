@@ -27,14 +27,23 @@ export const addHotel = async(hotelFormData: FormData)=>{
         }
     
     })
+    console.log(res)
     if(res.status!==200){
         throw new Error(res.data.message)
     }
     return res.data
 
-
-
 }
+
+export const fetchMyHotels = async()=>{
+    const res = await axiosClient.get("/hotels/")
+        if(res.status!==200){
+            throw new Error(res.data.message)
+        }
+        return res.data.hotels
+  
+}
+
 export const logOut = async()=>{
     const res = await axiosClient.get('/users/logout')
     if(res.status!==200){
