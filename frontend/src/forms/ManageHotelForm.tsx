@@ -1,5 +1,6 @@
 import { FormProvider, useForm } from "react-hook-form";
 import HotelDetailsSection from "./HotelDetailsSection";
+import { Hotel } from "../pages/MyHotels";
 
 export type HotelFormType = {
   name: string;
@@ -16,15 +17,16 @@ export type HotelFormType = {
 };
 
 type Props={
+  hotel?: Hotel
   onSave :(hotelFormData: FormData) => void;
   isPending: boolean
 }
 
-const ManageHotelForm = ({onSave , isPending}: Props) => {
+const ManageHotelForm = ({onSave , isPending, hotel}: Props) => {
   const formMethods = useForm<HotelFormType>();
   return (
     <FormProvider {...formMethods}>
-        <HotelDetailsSection onSave = {onSave}  isPending = {isPending}/>
+        <HotelDetailsSection onSave = {onSave} hotel={hotel}  isPending = {isPending}/>
     </FormProvider>
   );
 };

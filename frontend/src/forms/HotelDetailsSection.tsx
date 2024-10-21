@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
 import StarRatings from "./StarRatings";
 import FacilityType from "./FacilityType";
 import { Loader } from "lucide-react";
+import { Hotel } from "../pages/MyHotels";
 
 type HotelFormType = {
   name: string;
@@ -20,25 +21,73 @@ type HotelFormType = {
 };
 
 export type HotelOtherType = {
-  starRating: number
-  facilities: string[]
-  pricePerNight:string
+  starRating: number;
+  facilities: string[];
+  pricePerNight: string;
 };
 
 const hotelTypes = ["Resort", "Hotel", "Apartment", "Villa", "Hostel"];
-type Props={
-    onSave :(hotelFormData: FormData) => void;
-    isPending: boolean
-  }
+type Props = {
+  hotel?: Hotel;
+  onSave: (hotelFormData: FormData) => void;
+  isPending: boolean;
+};
 
-export default function HotelDetailsSection({onSave , isPending}: Props) {
-  const { register ,handleSubmit ,  formState:{errors} } = useFormContext<HotelFormType>();
+export default function HotelDetailsSection({
+  onSave,
+  isPending,
+  hotel,
+}: Props) {
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useFormContext<HotelFormType>();
   const [formData, setFormData] = useState<HotelOtherType>({
     starRating: 0,
     facilities: [],
-    pricePerNight: "0"
-    
+    pricePerNight: "0",
   });
+  const [imageUrls, setImageUrls] = useState<string[] | undefined>(
+    hotel?.imageUrls || []
+  );
+
+  const handleDelete = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    imageUrl: string
+  ) => {
+    event.preventDefault();
+
+    const updatedImages = imageUrls?.filter((url) => url !== imageUrl);
+    setImageUrls(updatedImages);
+    if (hotel && updatedImages) {
+      hotel.imageUrls = updatedImages;
+    }
+  };
+
+  useEffect(() => {
+    if (hotel) {
+      reset({
+        name: hotel.name,
+        city: hotel.city,
+        country: hotel.country,
+        description: hotel.description,
+        type: hotel.type,
+        pricePerNight: hotel.pricePerNight,
+        adultCount: hotel.adultCount,
+        childCount: hotel.childCount,
+        imageFiles: null,
+      });
+
+      setFormData({
+        starRating: hotel.starRating,
+        facilities: hotel.facilities,
+        pricePerNight: hotel.pricePerNight.toString(),
+      });
+      setImageUrls(hotel.imageUrls);
+    }
+  }, [hotel, reset]);
 
   const handleStars = (star: number) => {
     setFormData((prev: HotelOtherType) => ({
@@ -46,11 +95,14 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
       starRating: star,
     }));
   };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleFacilityToggle = (facility: string) => {
     setFormData((prev) => ({
@@ -61,33 +113,33 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
     }));
   };
 
-  const onSubmit =  handleSubmit((data, e)=>{
-    e?.preventDefault()
+  const onSubmit = handleSubmit((data, e) => {
+    e?.preventDefault();
     const newData = {
-        ...data,
-        ...formData
-    }
-    console.log(newData)
+      ...data,
+      ...formData,
+    };
+    console.log(newData);
     const formDataJson = new FormData();
-    formDataJson.append("name" , newData.name)
-    formDataJson.append("city" , newData.city)
-    formDataJson.append("country" , newData.country)
-    formDataJson.append("description" , newData.description)
-    formDataJson.append("type" , newData.type)
-    formDataJson.append("pricePerNight" , newData.pricePerNight)
-    formDataJson.append("starRating" , newData.starRating.toString())
-    formDataJson.append("adultCount" , newData.adultCount.toString())
-    formDataJson.append("childCount" , newData.childCount.toString())
-    newData.facilities.forEach((facility ,index)=>{
-        formDataJson.append(`facilities[${index}]` ,facility)
-    })
-    Array.from(newData.imageFiles as FileList).forEach((imageFile)=>{
-        formDataJson.append('imageFiles', imageFile)
-    })
-    console.log(formDataJson)
+    formDataJson.append("name", newData.name);
+    formDataJson.append("city", newData.city);
+    formDataJson.append("country", newData.country);
+    formDataJson.append("description", newData.description);
+    formDataJson.append("type", newData.type);
+    formDataJson.append("pricePerNight", newData.pricePerNight);
+    formDataJson.append("starRating", newData.starRating.toString());
+    formDataJson.append("adultCount", newData.adultCount.toString());
+    formDataJson.append("childCount", newData.childCount.toString());
+    newData.facilities.forEach((facility, index) => {
+      formDataJson.append(`facilities[${index}]`, facility);
+    });
+    Array.from(newData.imageFiles as FileList).forEach((imageFile) => {
+      formDataJson.append("imageFiles", imageFile);
+    });
+    console.log(formDataJson);
 
-    onSave(formDataJson)
-})
+    onSave(formDataJson);
+  });
 
   return (
     <div className="mt-20  min-h-screen flex items-center justify-center p-4">
@@ -112,15 +164,9 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
                 {...register("name", { required: "Enter the Name" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
-              {
-                errors.name && (
-                    <span className="text-red-600">
-                        {
-                            errors.name.message
-                        }
-                    </span>
-                )
-              }
+              {errors.name && (
+                <span className="text-red-600">{errors.name.message}</span>
+              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="type" className="text-lg font-semibold block">
@@ -138,15 +184,9 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
                   </option>
                 ))}
               </select>
-              {
-                errors.type && (
-                    <span className="text-red-600">
-                        {
-                            errors.type.message
-                        }
-                    </span>
-                )
-              }
+              {errors.type && (
+                <span className="text-red-600">{errors.type.message}</span>
+              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="country" className="text-lg font-semibold block">
@@ -158,15 +198,9 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
                 {...register("country", { required: "Enter the Country" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
-               {
-                errors.country && (
-                    <span className="text-red-600">
-                        {
-                            errors.country.message
-                        }
-                    </span>
-                )
-              }
+              {errors.country && (
+                <span className="text-red-600">{errors.country.message}</span>
+              )}
             </div>
             <div className="space-y-2">
               <label htmlFor="city" className="text-lg font-semibold block">
@@ -178,15 +212,9 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
                 {...register("city", { required: "Enter the City" })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
-                {
-                errors.city && (
-                    <span className="text-red-600">
-                        {
-                            errors.city.message
-                        }
-                    </span>
-                )
-              }
+              {errors.city && (
+                <span className="text-red-600">{errors.city.message}</span>
+              )}
             </div>
             <div className="space-y-2">
               <label
@@ -199,18 +227,16 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
                 type="number"
                 id="adultCount"
                 min="1"
-                {...register("adultCount", { required: "Enter the Adult Count" })}
+                {...register("adultCount", {
+                  required: "Enter the Adult Count",
+                })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
-                {
-                errors.adultCount && (
-                    <span className="text-red-600">
-                        {
-                            errors.adultCount.message
-                        }
-                    </span>
-                )
-              }
+              {errors.adultCount && (
+                <span className="text-red-600">
+                  {errors.adultCount.message}
+                </span>
+              )}
             </div>
             <div className="space-y-2">
               <label
@@ -228,15 +254,11 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
                 })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
               />
-                {
-                errors.childCount && (
-                    <span className="text-red-600">
-                        {
-                            errors.childCount.message
-                        }
-                    </span>
-                )
-              }
+              {errors.childCount && (
+                <span className="text-red-600">
+                  {errors.childCount.message}
+                </span>
+              )}
             </div>
           </div>
 
@@ -253,18 +275,12 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
                   required: "Enter the Description",
                 })}
                 className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors min-h-[150px]"
-              >
-
-              </textarea>
-              {
-                errors.description && (
-                    <span className="text-red-600">
-                        {
-                            errors.description.message
-                        }
-                    </span>
-                )
-              }
+              ></textarea>
+              {errors.description && (
+                <span className="text-red-600">
+                  {errors.description.message}
+                </span>
+              )}
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -294,49 +310,60 @@ export default function HotelDetailsSection({onSave , isPending}: Props) {
             handleFacilityToggle={handleFacilityToggle}
             formData={formData}
           />
-
           <div className="space-y-2">
             <label htmlFor="imageFiles" className="text-lg font-semibold block">
               Images
             </label>
+            <div className="flex space-x-2 mb-4">
+              {imageUrls?.map((url, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={url}
+                    alt={`Image ${index}`}
+                    className="w-32 h-32 object-cover rounded-md transition-all duration-300 group-hover:brightness-50"
+                  />
+                  <button
+                    onClick={(e) => handleDelete(e, url)}
+                    className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50 text-white font-bold px-2 py-1 rounded-md"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+
             <input
               type="file"
               id="imageFiles"
               multiple
               accept="image/*"
               {...register("imageFiles", {
-                required: "Select Images for Your Hotels",
+                required: hotel ? false : "Select Images for Your Hotels",
               })}
               className="w-full p-2 border-2 border-gray-300 rounded-md focus:border-blue-500 transition-colors"
             />
-              {
-                errors.imageFiles && (
-                    <span className="text-red-600">
-                        {
-                            errors.imageFiles.message
-                        }
-                    </span>
-                )
-              }
+            {errors.imageFiles && (
+              <span className="text-red-600">{errors.imageFiles.message}</span>
+            )}
           </div>
 
           <motion.button
             type="submit"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            disabled= {isPending}
+            disabled={isPending}
             className={`w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 rounded-lg transition-all duration-300
                 ${isPending ? "opacity-50 cursor-not-allowed" : ""}
                 `}
           >
-            {isPending  ? (
-                  <div className="flex justify-center items-center space-x-2">
-                    <Loader className="animate-spin" />
-                    <span>Adding Hotel...</span>
-                  </div>
-                ) : (
-                  "Register Hotel"
-                )}
+            {isPending ? (
+              <div className="flex justify-center items-center space-x-2">
+                <Loader className="animate-spin" />
+                <span>Adding Hotel...</span>
+              </div>
+            ) : (
+              "Register Hotel"
+            )}
           </motion.button>
         </form>
       </motion.div>

@@ -34,7 +34,7 @@ export default function HotelList() {
 
   if(isLoading) return <MyHotelsSkeleton/>
   if(isError) return <ErrorBoundary/>
-
+if(!fetchedHotels) return <div className="text-3xl font-semibold text-blue-600">No Hotels Found....</div>
 
 
   return (
