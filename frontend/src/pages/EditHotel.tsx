@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
 import * as apiClient from '../api-client'
 import ManageHotelForm from "../forms/ManageHotelForm"
+import ErrorBoundary from "../components/ErrorBoundary"
 
 const EditHotel =()=>{
     const {hotelId} = useParams()
@@ -13,7 +14,8 @@ const EditHotel =()=>{
 
     })
     console.log(hotelInfo)
-    return <ManageHotelForm isPending={isLoading} onSave={()=>{}} hotel={hotelInfo} />
+    if(isError) return <ErrorBoundary/>
+    return <ManageHotelForm isPending={isLoading} onSave={()=>{}} btnName={"Save Changes"} hotel={hotelInfo} />
 
 
 

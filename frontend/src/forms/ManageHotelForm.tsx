@@ -20,13 +20,14 @@ type Props={
   hotel?: Hotel
   onSave :(hotelFormData: FormData) => void;
   isPending: boolean
+  btnName: string 
 }
 
-const ManageHotelForm = ({onSave , isPending, hotel}: Props) => {
+const ManageHotelForm = ({onSave , isPending, hotel , btnName}: Props) => {
   const formMethods = useForm<HotelFormType>();
   return (
     <FormProvider {...formMethods}>
-        <HotelDetailsSection onSave = {onSave} hotel={hotel}  isPending = {isPending}/>
+        <HotelDetailsSection btnName= {btnName} onSave = {onSave} hotel={hotel}  isPending = {isPending}/>
     </FormProvider>
   );
 };

@@ -31,12 +31,14 @@ type Props = {
   hotel?: Hotel;
   onSave: (hotelFormData: FormData) => void;
   isPending: boolean;
+  btnName:string
 };
 
 export default function HotelDetailsSection({
   onSave,
   isPending,
   hotel,
+  btnName
 }: Props) {
   const {
     register,
@@ -362,7 +364,7 @@ export default function HotelDetailsSection({
                 <span>Adding Hotel...</span>
               </div>
             ) : (
-              "Register Hotel"
+              btnName
             )}
           </motion.button>
         </form>

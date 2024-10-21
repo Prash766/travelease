@@ -22,7 +22,7 @@ const AddHotels = ()=>{
 
     }
 
-    return( <ManageHotelForm onSave ={handleSave}  isPending ={isPending}/>)
+    return( <ManageHotelForm btnName= {"Register Hotel"} onSave ={handleSave}  isPending ={isPending}/>)
 }
 
 export default AddHotels
