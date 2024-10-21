@@ -31,7 +31,6 @@ test('User should be able to add a hotel' , async({page})=>{
 
     await page.locator('button:has(svg.lucide-star)').nth(2).click();
 
-// Check if 3 stars are selected (via the class or fill color change)
 const selectedStarsCount = await page.locator('svg.lucide-star[fill="#FFFF00"]').count();
  expect(selectedStarsCount).toBe(3);  // This is the corrected part
 
@@ -49,5 +48,22 @@ const selectedStarsCount = await page.locator('svg.lucide-star[fill="#FFFF00"]')
     await expect(page.getByText("Hotel Added")).toBeVisible()
 })
 
+test("should display hotels", async ({ page }) => {
+    await page.goto(`${UI_URL}/myHotels`);
+  
+    await expect(page.getByRole("heading", { name: "Azure Skyline Resort" })).toBeVisible();
+    await expect(page.getByText("₹3500")).toBeVisible();
+    await expect(page.getByText("Delhi, India")).toBeVisible();
+    const selectedStars = await page.locator('svg.lucide-star.text-yellow-400').count();
+
+    await expect(selectedStars).toBe(3);
+   
+    await expect(page.locator('svg.lucide-users')).toBeVisible(); 
+    await expect(page.getByText("2 Adults")).toBeVisible(); 
+    await expect(page.getByText("2 Children")).toBeVisible(); 
+  
+    await expect(page.getByRole("button", { name: "View Details" })).toBeVisible();
+  });
+  
 
 
