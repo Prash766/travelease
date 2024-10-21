@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import axiosClient from "./axiosClient";
 import { SignUpFormData } from "./pages/SignUp";
 import { SignInForm } from "./pages/Login";
+import { Hotel } from "./pages/MyHotels";
 
  export const signUp = async(formData:SignUpFormData)=>{
     const res = await axiosClient.post('/users/register', formData)
@@ -43,6 +44,16 @@ export const fetchMyHotels = async()=>{
         return res.data.hotels
   
 }
+
+export const fetchMyHotelId = async(hotelId :string) : Promise<Hotel>=>{
+    const res = await axiosClient.get(`/hotels/${hotelId}`)
+    if(res.status!==200){
+        throw new Error(res.data.message)
+
+    }
+    return res.data.hotel
+}
+
 
 export const logOut = async()=>{
     const res = await axiosClient.get('/users/logout')
