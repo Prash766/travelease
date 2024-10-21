@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { upload } from "../middleware/multer.middleware";
-import { addHotel, getHotelsOfUser } from "../controller/hotel.controller";
+import { addHotel, getHotelInfo, getHotelsOfUser } from "../controller/hotel.controller";
 import { validateToken } from "../middleware/auth.middleware";
 import { body } from "express-validator";
 const router = Router()
@@ -20,5 +20,6 @@ router.route('/add').post(upload.array("imageFiles", 6) ,[
 ],validateToken,addHotel)
 
 router.route('/').get(validateToken, getHotelsOfUser )
+router.route('/:id').get(validateToken , getHotelInfo)
  
 export default router 
