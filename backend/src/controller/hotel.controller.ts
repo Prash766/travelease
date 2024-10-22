@@ -69,38 +69,50 @@ const getHotelInfo = asyncHandler(async (req, res) => {
   }
 });
 
-const updateHotelInfo = asyncHandler(async(req , res)=>{
+const updateHotelInfo = asyncHandler(async (req, res) => {
   try {
-    const id= req.params.id.toString()
-    const hotelData:HotelType = req.body
-    const imageFiles = req.files as Express.Multer.File[]
-    let uploadFiles : Promise<string>[] = []
-    if(imageFiles){
-      uploadFiles = imageFiles.map(async(file)=>{
-        const res = await uploadCloudinary(file.path)
-        return res?.secure_url as string
-      })
-    }
-    let uploadedUrls = await Promise.all(uploadFiles)
-      uploadedUrls = [...uploadedUrls , ...(hotelData.imageUrls||[])]
-    
+    const id = req.params.id.toString();
+    const hotelData: HotelType = req.body;
+    const imageFiles = req.files as Express.Multer.File[];
 
-    hotelData.imageUrls = uploadedUrls
-    hotelData.userId = req.user
-    const hotel = new Hotel(hotelData)
-    await hotel.save()
+    let uploadFiles: Promise<string>[] = [];
+
+    if (imageFiles) {
+      uploadFiles = imageFiles.map(async (file) => {
+        const res = await uploadCloudinary(file.path);
+        return res?.secure_url as string;
+      });
+    }
+
+    let uploadedUrls = await Promise.all(uploadFiles);
+console.log(hotelData.imageUrls)
+    uploadedUrls = [...uploadedUrls, ...hotelData.imageUrls];
+
+    hotelData.imageUrls = uploadedUrls;
+    hotelData.userId = req.user;
+
+    const updatedHotel = await Hotel.findByIdAndUpdate(id, hotelData, { new: true });
+
+    if (!updatedHotel) {
+      return res.status(404).json({
+        success: false,
+        message: "Hotel not found",
+      });
+    }
+
     return res.status(200).json({
-      success:true,
-      hotel
-    })
-  } catch (error:any) {
-    console.log(error)
+      success: true,
+      hotel: updatedHotel,
+    });
+  } catch (error: any) {
+    console.log(error);
     return res.status(400).json({
-      success:false,
-      message:error.message || "Something went wrong"
-    })
-    
+      success: false,
+      message: error.message || "Something went wrong",
+    });
   }
-})
+});
+
+
 
 export { addHotel, getHotelsOfUser, getHotelInfo, updateHotelInfo };
