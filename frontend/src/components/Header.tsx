@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAppContext } from "../contexts/AppContext";
 import SignOutButton from "./SignOutButton";
@@ -8,6 +8,7 @@ interface Prop {
 
 const Header = ({ bgTransparent }: Prop) => {
   const { isVerified } = useAppContext();
+  const navigate = useNavigate()
 
   return (
     <header
@@ -16,7 +17,7 @@ const Header = ({ bgTransparent }: Prop) => {
       } text-white p-4 absolute w-full z-10`}
     >
       <div className="container mx-auto flex justify-between items-center">
-        <motion.h1 className="text-4xl font-bold">TravelEase</motion.h1>
+        <motion.h1 onClick={()=>navigate('/')} className="cursor-pointer text-4xl font-bold">TravelEase</motion.h1>
         <nav>
           <motion.ul
             className="flex space-x-4"
