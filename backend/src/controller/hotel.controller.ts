@@ -10,14 +10,14 @@ const addHotel = asyncHandler(async (req, res) => {
     const uploadUrls = imageFiles.map(async (image) => {
       if (image?.path) {
         const res = await uploadCloudinary(image.path);
-        console.log(res);
+        // console.log(res);
         return res?.secure_url;
       }
     });
     const imageUrls = await Promise.all(uploadUrls);
 
     hotelInfo.imageUrls = imageUrls as string[];
-    console.log(req.user);
+    // console.log(req.user);
     hotelInfo.userId = req.user;
     const hotel = new Hotel(hotelInfo);
     await hotel.save();
@@ -74,7 +74,6 @@ const updateHotelInfo = asyncHandler(async (req, res) => {
     const id = req.params.id.toString();
     const hotelData: HotelType = req.body;
     const imageFiles = req.files as Express.Multer.File[];
-
     let uploadFiles: Promise<string>[] = [];
 
     if (imageFiles) {
@@ -85,9 +84,7 @@ const updateHotelInfo = asyncHandler(async (req, res) => {
     }
 
     let uploadedUrls = await Promise.all(uploadFiles);
-console.log(hotelData.imageUrls)
     uploadedUrls = [...uploadedUrls, ...hotelData.imageUrls];
-
     hotelData.imageUrls = uploadedUrls;
     hotelData.userId = req.user;
 
