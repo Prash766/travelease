@@ -10,6 +10,8 @@ const tokenOptions={
     httpOnly: true,
     secure: process.env.NODE_ENV ==="production",
     maxAge: 846400000,
+    sameSite: (process.env.NODE_ENV==='production'?'none':'lax') as 'lax'|'strict'| 'none',
+
   }
 
 const registerUser = asyncHandler(
