@@ -118,12 +118,10 @@ export default function HotelDetailsSection({
 
   const onSubmit = handleSubmit((data, e) => {
     e?.preventDefault();
-    const newData = {
-      ...data,
-      ...formData,
-    };
-    console.log(newData);
+    const newData = { ...data, ...formData };
     const formDataJson = new FormData();
+
+    // Append hotel details to formData
     formDataJson.append("name", newData.name);
     formDataJson.append("city", newData.city);
     formDataJson.append("country", newData.country);
@@ -133,19 +131,31 @@ export default function HotelDetailsSection({
     formDataJson.append("starRating", newData.starRating.toString());
     formDataJson.append("adultCount", newData.adultCount.toString());
     formDataJson.append("childCount", newData.childCount.toString());
-    newData.facilities.forEach((facility, index) => {
-      formDataJson.append(`facilities[${index}]`, facility);
-    });
-    (imageUrls as string[]).map((url)=>{
-      formDataJson.append("imageUrls" ,url)
-    })
-    Array.from(newData.imageFiles as FileList).forEach((imageFile) => {
-      formDataJson.append("imageFiles", imageFile);
-    });
-    console.log(formDataJson);
 
-    onSave(formDataJson);
+    // Append facilities
+    newData.facilities.forEach((facility) => {
+      formDataJson.append("facilities", facility);
+    });
+
+    if (imageUrls && imageUrls.length > 0) {
+      imageUrls.map((url) =>{ 
+        console.log(url)
+        formDataJson.append("imageUrls", url)
+      }
+    )
+  }
+    if (newData.imageFiles && newData.imageFiles.length > 0) {
+      Array.from(newData.imageFiles).map((imageFile) => formDataJson.append("imageFiles", imageFile));
+
+    }
+    if (hotel) {
+      formDataJson.append("id", hotel._id);
+    }
+console.log(formDataJson)
+    onSave(formDataJson); 
   });
+
+  
 
   return (
     <div className="mt-20  min-h-screen flex items-center justify-center p-4">
@@ -365,7 +375,7 @@ export default function HotelDetailsSection({
             {isPending ? (
               <div className="flex justify-center items-center space-x-2">
                 <Loader className="animate-spin" />
-                <span>Adding Hotel...</span>
+                <span>{btnName==='Save Changes'?"Saving Changes..." : "Adding Changes..."}</span>
               </div>
             ) : (
               btnName

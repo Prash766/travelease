@@ -27,7 +27,7 @@ const ManageHotelForm = ({onSave , isPending, hotel , btnName}: Props) => {
   const formMethods = useForm<HotelFormType>();
   return (
     <FormProvider {...formMethods}>
-        <HotelDetailsSection btnName= {btnName} onSave = {onSave} hotel={hotel}  isPending = {isPending}/>
+        <HotelDetailsSection  btnName= {btnName} onSave = {onSave} hotel={hotel}  isPending = {isPending}/>
     </FormProvider>
   );
 };
