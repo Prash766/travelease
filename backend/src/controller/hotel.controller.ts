@@ -69,4 +69,38 @@ const getHotelInfo = asyncHandler(async (req, res) => {
   }
 });
 
-export { addHotel, getHotelsOfUser, getHotelInfo };
+const updateHotelInfo = asyncHandler(async(req , res)=>{
+  try {
+    const id= req.params.id.toString()
+    const hotelData:HotelType = req.body
+    const imageFiles = req.files as Express.Multer.File[]
+    let uploadFiles : Promise<string>[] = []
+    if(imageFiles){
+      uploadFiles = imageFiles.map(async(file)=>{
+        const res = await uploadCloudinary(file.path)
+        return res?.secure_url as string
+      })
+    }
+    let uploadedUrls = await Promise.all(uploadFiles)
+      uploadedUrls = [...uploadedUrls , ...(hotelData.imageUrls||[])]
+    
+
+    hotelData.imageUrls = uploadedUrls
+    hotelData.userId = req.user
+    const hotel = new Hotel(hotelData)
+    await hotel.save()
+    return res.status(200).json({
+      success:true,
+      hotel
+    })
+  } catch (error:any) {
+    console.log(error)
+    return res.status(400).json({
+      success:false,
+      message:error.message || "Something went wrong"
+    })
+    
+  }
+})
+
+export { addHotel, getHotelsOfUser, getHotelInfo, updateHotelInfo };
