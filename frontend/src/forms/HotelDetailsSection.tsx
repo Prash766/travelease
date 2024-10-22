@@ -18,6 +18,7 @@ type HotelFormType = {
   adultCount: number;
   childCount: number;
   imageFiles: FileList | null;
+  imageUrls: string[]
 };
 
 export type HotelOtherType = {
@@ -135,6 +136,9 @@ export default function HotelDetailsSection({
     newData.facilities.forEach((facility, index) => {
       formDataJson.append(`facilities[${index}]`, facility);
     });
+    (imageUrls as string[]).map((url)=>{
+      formDataJson.append("imageUrls" ,url)
+    })
     Array.from(newData.imageFiles as FileList).forEach((imageFile) => {
       formDataJson.append("imageFiles", imageFile);
     });
