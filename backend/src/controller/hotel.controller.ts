@@ -111,7 +111,7 @@ const updateHotelInfo = asyncHandler(async (req, res) => {
 });
 
 
-const searcHotels = asyncHandler(async(req, res)=>{
+const searchHotels = asyncHandler(async(req, res)=>{
  try {
    const pageNo = req.query.page?.toString() || "1"
    const pageSize = 10
@@ -123,7 +123,7 @@ const searcHotels = asyncHandler(async(req, res)=>{
      success:true,
      hotels: hotels,
      pagination:{
-      total,
+      total,  
       page:pageNo,
       totalPages: Math.ceil(total/pageSize)
       
@@ -143,4 +143,4 @@ const searcHotels = asyncHandler(async(req, res)=>{
 
 
 
-export { addHotel, getHotelsOfUser, getHotelInfo, updateHotelInfo, searcHotels };
+export { addHotel, getHotelsOfUser, getHotelInfo, updateHotelInfo, searchHotels };

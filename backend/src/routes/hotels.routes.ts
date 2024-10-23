@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { upload } from "../middleware/multer.middleware";
-import { addHotel, getHotelInfo, getHotelsOfUser, searcHotels, updateHotelInfo } from "../controller/hotel.controller";
+import { addHotel, getHotelInfo, getHotelsOfUser, searchHotels, updateHotelInfo } from "../controller/hotel.controller";
 import { validateToken } from "../middleware/auth.middleware";
 import { body } from "express-validator";
 const router = Router()
@@ -33,6 +33,6 @@ router.route('/edit/:id').put(upload.array("imageFiles", 6), [
     body("starRating").notEmpty().isNumeric().withMessage("Star rating is required")
   ], validateToken, updateHotelInfo);
 
-  router.route("/search").get(validateToken , searcHotels)
+  router.route("/search").get(validateToken , searchHotels)
 
 export default router 
