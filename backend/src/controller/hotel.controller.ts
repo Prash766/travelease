@@ -111,5 +111,36 @@ const updateHotelInfo = asyncHandler(async (req, res) => {
 });
 
 
+const searcHotels = asyncHandler(async(req, res)=>{
+ try {
+   const pageNo = req.query.page?.toString() || "1"
+   const pageSize = 10
+   const skip = (parseInt(pageNo) - 1)*pageSize
+   const hotels = await Hotel.find({}).skip(skip).limit(pageSize)
+   const total = await Hotel.countDocuments()
 
-export { addHotel, getHotelsOfUser, getHotelInfo, updateHotelInfo };
+   return res.status(200).json({
+     success:true,
+     hotels: hotels,
+     pagination:{
+      total,
+      page:pageNo,
+      totalPages: Math.ceil(total/pageSize)
+      
+     }
+ 
+   })
+ } catch (error: any) {
+  console.log(error)
+  return res.status(400).json({
+    success:false,
+    message : error.message || "Something went wrong"
+  })
+
+ }
+
+})
+
+
+
+export { addHotel, getHotelsOfUser, getHotelInfo, updateHotelInfo, searcHotels };
