@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchContext } from "../contexts/SearchContext";
 const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
   const [isSticky, setIsSticky] = useState(false);
-  const [isHomePage, setIsHomePage] = useState(true);
   const searchRef = useRef<HTMLDivElement>(null);
   const search = useSearchContext();
 
@@ -46,11 +45,7 @@ const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
   return (
     <motion.div
       ref={searchRef}
-      className={`w-full ${bgTransparent?"":"mt-24"} z-10 ${
-        isHomePage
-          ? "bg-white shadow-md"
-          : "bg-indigo-900 text-white absolute top-0 left-0 right-0 z-20"
-      } ${isSticky ? "sticky top-0 z-50" : ""}`}
+      className={`w-full ${bgTransparent?"":"mt-24"} z-10 ${isSticky ? "sticky top-0 z-50" : ""}`}
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -83,11 +78,11 @@ const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
             </label>
             <input
               type="date"
-              name="checkOut"
+              name="checkIn"
               min={minDate} 
               max={maxDateString} 
               value={checkIn ? checkIn.toISOString().substring(0, 10) : ""} 
-              onChange={(e) => setCheckOut(new Date(e.target.value))} 
+              onChange={(e) => setCheckIn(new Date(e.target.value))} 
               className="w-full p-2 border border-gray-300 rounded-md text-black"
             />
           </div>

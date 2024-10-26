@@ -8,6 +8,7 @@ import AddHotels from "./pages/AddHotel";
 import MyHotel from "./pages/MyHotels";
 
 import EditHotel from "./pages/EditHotel";
+import Search from "./pages/Search";
 
 function App() {
   const {isVerified} = useAppContext()
@@ -18,7 +19,7 @@ function App() {
           <Route
             path="/"
             element={
-              <Layout bgTransparent={true}>
+              <Layout showSearchBar={true} bgTransparent={true}>
                 <p>Home</p>
               </Layout>
             }
@@ -26,7 +27,7 @@ function App() {
           <Route
             path="/myBookings"
             element={
-              <Layout bgTransparent={false}>
+              <Layout showSearchBar={true} bgTransparent={false}>
                 <h1 className="mt=80">BOOKING THE SITE</h1>
               </Layout>
             }
@@ -34,22 +35,30 @@ function App() {
          
           {isVerified && <>
           <Route path="/add-hotel" element={
-            <Layout bgTransparent={false}>  
+            <Layout showSearchBar={false} bgTransparent={false}>  
             <AddHotels/>
             </Layout>
             }/>
               <Route
             path="/myHotels"
             element={
-              <Layout bgTransparent={false}>
+              <Layout showSearchBar={false} bgTransparent={false}>
                 <MyHotel/>
+              </Layout>
+            }
+          />
+              <Route
+            path="/search"
+            element={
+              <Layout showSearchBar={false} bgTransparent={false}>
+                <Search/>
               </Layout>
             }
           />
             <Route
             path="/edit-hotel/:hotelId"
             element={
-              <Layout bgTransparent={false}>
+              <Layout showSearchBar={false} bgTransparent={false}>
                 <EditHotel/>
               </Layout>
             }
