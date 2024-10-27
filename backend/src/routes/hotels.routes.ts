@@ -33,6 +33,6 @@ router.route('/edit/:id').put(upload.array("imageFiles", 6), [
     body("starRating").notEmpty().isNumeric().withMessage("Star rating is required")
   ], validateToken, updateHotelInfo);
 
-  router.route("/search").get(validateToken , searchHotels)
+  router.route("/query/search").get(validateToken , searchHotels)
 
 export default router 
