@@ -1,12 +1,14 @@
+import { HotelType } from '@prash766/shared-types/dist'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CarTaxiFront, ChefHat, ChevronLeft, ChevronRight, GlassWater, ShoppingBag, Star, Wifi } from 'lucide-react'
 import { useState } from 'react'
 
-function HotelSearchCard({ hotel }: { hotel: any }) {
+
+function HotelSearchCard({ hotel }: { hotel: HotelType }) {
   const [[currentImageIndex, direction], setPage] = useState([0, 0])
 
   const paginate = (newDirection: number) => {
-    const nextIndex = (currentImageIndex + newDirection + hotel.images.length) % hotel.images.length
+    const nextIndex = (currentImageIndex + newDirection + hotel.imageUrls.length) % hotel.imageUrls.length
     setPage([nextIndex, newDirection])
   }
 
@@ -56,7 +58,7 @@ function HotelSearchCard({ hotel }: { hotel: any }) {
           <AnimatePresence initial={false} custom={direction}>
             <motion.img
               key={currentImageIndex}
-              src={hotel.images[currentImageIndex]}
+              src={hotel.imageUrls[currentImageIndex]}
               alt={hotel.name}
               className="w-full h-full object-cover absolute top-0 left-0"
               custom={direction}
@@ -67,7 +69,7 @@ function HotelSearchCard({ hotel }: { hotel: any }) {
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.5}
-              onDragEnd={(_,{ offset, velocity }) => {
+              onDragEnd={(_, { offset, velocity }) => {
                 const swipe = swipePower(offset.x, velocity.x)
 
                 if (swipe < -swipeConfidenceThreshold) {
@@ -104,7 +106,7 @@ function HotelSearchCard({ hotel }: { hotel: any }) {
           </div>
 
           <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-20">
-            {hotel.images.map((_ : any, index: number) => (
+            {hotel.imageUrls.map((_:any, index:number) => (
               <motion.div
                 key={index}
                 className={`w-2 h-2 rounded-full ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'}`}
@@ -126,7 +128,7 @@ function HotelSearchCard({ hotel }: { hotel: any }) {
               {hotel.name}
             </motion.h3>
             <div className="flex items-center">
-              {[...Array(hotel.rating)].map((_, i) => (
+              {[...Array(hotel.starRating)].map((_, i) => (
                 <motion.div
                   key={i}
                   initial={{ scale: 0 }}
@@ -139,10 +141,10 @@ function HotelSearchCard({ hotel }: { hotel: any }) {
             </div>
           </div>
           <p className="text-gray-600 mb-2">{hotel.country}</p>
-          <p className="text-lg font-bold mb-2">${hotel.price} per night</p>
-          <p className="text-gray-700 mb-4">{hotel.description}</p>
+          <p className="text-lg font-bold mb-2">₹{hotel.pricePerNight} per night</p>
+          <p className="text-gray-700 mb-4 clamped-text">{hotel.description}</p>
           <div className="flex flex-wrap gap-3 mb-4">
-            {hotel.facilities.map((facility: string, index: number) => (
+            {hotel.facilities.map((facility:string, index:number) => (
               <motion.div
                 key={facility}
                 initial={{ opacity: 0, y: 20 }}

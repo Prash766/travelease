@@ -1,15 +1,17 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useSearchContext } from "../contexts/SearchContext";
-const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
+import { useNavigate } from "react-router-dom";
+const SearchBar = ({ bgTransparent }: { bgTransparent: Boolean }) => {
   const [isSticky, setIsSticky] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const search = useSearchContext();
+  const navigate = useNavigate();
 
   const [destination, setDestination] = useState<string>(search.destination);
   const [checkIn, setCheckIn] = useState<Date>(search.checkIn);
   const [checkOut, setCheckOut] = useState<Date>(search.checkOut);
-  const [adultCount, setAdultCount] = useState<number>(search.adultCount);
+  const [adultCount, setAdultCount] = useState<number>(search.adultCount ?? 1);
   const [childCount, setChildCount] = useState<number>(search.childCount);
   const minDate = new Date().toISOString().substring(0, 10);
   const maxDate = new Date();
@@ -36,16 +38,15 @@ const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
       adultCount,
       childCount
     );
-    alert("Search submitted! Check console for details.");
+    console.log(destination, checkIn, checkOut, adultCount, childCount);
+    navigate("/search");
   };
-
-  // const toggleHomePage = () => {
-  //   setIsHomePage(!isHomePage)
-  // }
   return (
     <motion.div
       ref={searchRef}
-      className={`w-full ${bgTransparent?"":"mt-24"} z-10 ${isSticky ? "sticky top-0 z-50" : ""}`}
+      className={`w-full ${bgTransparent ? "" : "mt-24"} z-10 ${
+        isSticky ? "sticky top-0 z-50" : ""
+      }`}
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -79,10 +80,10 @@ const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
             <input
               type="date"
               name="checkIn"
-              min={minDate} 
-              max={maxDateString} 
-              value={checkIn ? checkIn.toISOString().substring(0, 10) : ""} 
-              onChange={(e) => setCheckIn(new Date(e.target.value))} 
+              min={minDate}
+              max={maxDateString}
+              value={checkIn ? checkIn.toISOString().substring(0, 10) : ""}
+              onChange={(e) => setCheckIn(new Date(e.target.value))}
               className="w-full p-2 border border-gray-300 rounded-md text-black"
             />
           </div>
@@ -97,10 +98,10 @@ const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
               type="date"
               id="checkOut"
               name="checkOut"
-              min={minDate} 
-              max={maxDateString} 
-              value={checkOut ? checkOut.toISOString().substring(0, 10) : ""} 
-              onChange={(e) => setCheckOut(new Date(e.target.value))} 
+              min={minDate}
+              max={maxDateString}
+              value={checkOut ? checkOut.toISOString().substring(0, 10) : ""}
+              onChange={(e) => setCheckOut(new Date(e.target.value))}
               className="w-full p-2 border border-gray-300 rounded-md text-black"
             />
           </div>
@@ -112,13 +113,35 @@ const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
               Adults
             </label>
             <input
-              type="number"
-              id="adultCount"
+              type="text"
               name="adultCount"
               value={adultCount}
-              onChange={(e) => setAdultCount(Number(e.target.value))}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setAdultCount(value ? Number(value) : 0);
+              }}
               min="1"
-              className="w-full p-2 border border-gray-300 rounded-md text-black"
+              max="20"
+              className="w-full p-2 border border-gray-300 rounded-md text-black appearance-none"
+              onKeyDown={(e) => {
+                const allowedKeys = [
+                  "Backspace",
+                  "Tab",
+                  "ArrowLeft",
+                  "ArrowRight",
+                ];
+                const isCtrlA = e.ctrlKey && e.key === "a";
+                if (
+                  !/^\d*$/.test(e.key) &&
+                  !allowedKeys.includes(e.key) &&
+                  !isCtrlA
+                ) {
+                  e.preventDefault();
+                }
+              }}
+              style={{
+                appearance: "textfield",
+              }}
             />
           </div>
           <div className="flex-grow min-w-[100px]">
@@ -129,13 +152,35 @@ const SearchBar = ({bgTransparent }: {bgTransparent:Boolean}) => {
               Children
             </label>
             <input
-              type="number"
-              id="childCount"
-              name="childCount"
+              type="text"
+              name="adultCount"
               value={childCount}
-              onChange={(e) => setChildCount(Number(e.target.value))}
-              min="0"
-              className="w-full p-2 border border-gray-300 rounded-md text-black"
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setChildCount(value ? Number(value) : 0);
+              }}
+              min="1"
+              max="20"
+              className="w-full p-2 border border-gray-300 rounded-md text-black appearance-none"
+              onKeyDown={(e) => {
+                const allowedKeys = [
+                  "Backspace",
+                  "Tab",
+                  "ArrowLeft",
+                  "ArrowRight",
+                ];
+                const isCtrlA = e.ctrlKey && e.key === "a";
+                if (
+                  !/^\d*$/.test(e.key) &&
+                  !allowedKeys.includes(e.key) &&
+                  !isCtrlA
+                ) {
+                  e.preventDefault();
+                }
+              }}
+              style={{
+                appearance: "textfield",
+              }}
             />
           </div>
           <div className="flex-grow min-w-[100px]">
