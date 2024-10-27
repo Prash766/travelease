@@ -3,6 +3,7 @@ import axiosClient from "./axiosClient";
 import { SignUpFormData } from "./pages/SignUp";
 import { SignInForm } from "./pages/Login";
 import { Hotel } from "./pages/MyHotels";
+import {HotelSearchResponse} from '@prash766/shared-types/dist'
 
 export const signUp = async (formData: SignUpFormData) => {
   const res = await axiosClient.post("/users/register", formData);
@@ -29,7 +30,7 @@ export const addHotel = async (hotelFormData: FormData) => {
   if (res.status !== 200) {
     throw new Error(res.data.message);
   }
-  return res.data;
+  return res.data
 };
 
 export const fetchMyHotels = async () => {
@@ -75,3 +76,28 @@ export const validateToken = async () => {
   }
   return res.data;
 };
+
+
+export type SearchParams = {
+  destination: string,
+  checkIn: string,
+  checkOut:string,
+  adultCount:string,
+  childCount:string,
+  page:string
+
+}
+ export const searchHotels= async(searchParams :SearchParams): Promise<HotelSearchResponse>=>{
+  const queryParams = new URLSearchParams()
+  queryParams.append("destination" , searchParams.destination || "")
+  queryParams.append("checkIn" , searchParams.checkIn || "")
+  queryParams.append("checkOut" , searchParams.checkOut || "")
+  queryParams.append("adultCount" , searchParams.adultCount || "")
+  queryParams.append("childCount" , searchParams.childCount || "")
+
+const res = await axiosClient(`/hotels/query/search?${queryParams}`)
+if(res.status!==200){
+  throw new Error("Error Fetching Hotels")
+}
+return res.data
+ }

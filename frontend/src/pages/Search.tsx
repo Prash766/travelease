@@ -1,54 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import HotelSearchCard from '../components/HotelSearchCard'
+import { useSearchContext } from '../contexts/SearchContext'
+import { useQuery } from '@tanstack/react-query'
+import * as apiClient from '../api-client'
+import Pagination from '../components/Pagination'
 
-const hotels = [
-  {
-    id: 1,
-    name: 'Luxury Resort & Spa',
-    country: 'Maldives',
-    price: 500,
-    rating: 5,
-    description: 'Experience ultimate luxury in our beachfront resort with world-class amenities.',
-    facilities: ['wifi', 'pool', 'restaurant', 'parking', 'spa'],
-    type: 'Resort',
-    images: [
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80',
-      'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    ]
-  },
-  {
-    id: 2,
-    name: 'City Center Hotel',
-    country: 'Japan',
-    price: 200,
-    rating: 4,
-    description: 'Modern hotel in the heart of Tokyo, perfect for business and leisure travelers.',
-    facilities: ['wifi', 'restaurant', 'parking'],
-    type: 'City Hotel',
-    images: [
-      'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-      'https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1025&q=80',
-      'https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80'
-    ]
-  },
-  {
-    id: 3,
-    name: 'Mountain Lodge',
-    country: 'Switzerland',
-    price: 300,
-    rating: 4,
-    description: 'Cozy lodge nestled in the Swiss Alps, offering breathtaking views and outdoor activities.',
-    facilities: ['wifi', 'restaurant', 'parking', 'spa'],
-    type: 'Lodge',
-    images: [
-      'https://images.unsplash.com/photo-1601551345006-53e21dd4d17b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-      'https://images.unsplash.com/photo-1602002418082-a4443e081dd1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80',
-      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80'
-    ]
-  },
-]
 
 const countries = ['All', 'Maldives', 'Japan', 'Switzerland']
 const hotelTypes = ['All', 'Resort', 'City Hotel', 'Lodge']
@@ -66,6 +23,7 @@ interface FilterOptions {
   
 
 export default function Search() {
+   
   const [filters, setFilters] = useState<FilterOptions>({
     country: 'All',
     priceRange: [0, 1000],
@@ -74,24 +32,43 @@ export default function Search() {
     facilities: [],
     hotelType: 'All'
   })
+  const search= useSearchContext()
+  const [page , setPage] = useState<number>(1)
+  console.log( search)
+  const searchParams = {
+    destination: search.destination,
+    checkIn : search.checkIn.toISOString(),
+    checkOut : search.checkOut.toISOString(),
+    adultCount: search.adultCount.toString(),
+    childCount: search.childCount.toString(),
+    page : page.toString()
 
+  }
+  const {data:searchedHotels} = useQuery(
+    {
+      queryKey:['searchHotel' , searchParams],
+      queryFn:()=> apiClient.searchHotels(searchParams)
+    }
+  )
+  console.log(searchedHotels)
+  
   const handleFilterChange = (key: string, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
 
-  const filteredHotels = hotels
-    .filter(hotel => filters.country === 'All' || hotel.country === filters.country)
-    .filter(hotel => hotel.price >= filters.priceRange[0] && hotel.price <= filters.priceRange[1])
-    .filter(hotel => hotel.rating >= filters.rating)
+  const filteredHotels = searchedHotels?.hotels?.filter(hotel => filters.country === 'All' || hotel.country === filters.country)
+    .filter(hotel => hotel.pricePerNight >= filters.priceRange[0] && hotel.pricePerNight <= filters.priceRange[1])
+    .filter(hotel => hotel.starRating >= filters.rating)
     .filter(hotel => filters.facilities.every(facility => hotel.facilities.includes(facility)))
     .filter(hotel => filters.hotelType === 'All' || hotel.type === filters.hotelType)
     .sort((a, b) => {
-      if (filters.sortBy === 'price-low-to-high') return a.price - b.price
-      if (filters.sortBy === 'price-high-to-low') return b.price - a.price
+      if (filters.sortBy === 'price-low-to-high') return a.pricePerNight - b.pricePerNight
+      if (filters.sortBy === 'price-high-to-low') return b.pricePerNight - a.pricePerNight
       return 0
     })
 
   return (
+    <>
     <div className="min-h-screen mt-10 bg-gray-100">
       <main className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -206,15 +183,21 @@ export default function Search() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-2xl font-semibold mb-6">Search Results</h2>
+            <h2 className="text-2xl font-semibold mb-6">{filteredHotels?.length} Search Results</h2>
             <div className="space-y-6">
-              {filteredHotels.map(hotel => (
-                <HotelSearchCard key={hotel.id} hotel={hotel} />
+              {filteredHotels?.map(hotel => (
+                <HotelSearchCard key={hotel._id} hotel={hotel} />
               ))}
             </div>
           </motion.div>
+         
         </div>
       </main>
+     
     </div>
+     <div className='mt-10'>
+     <Pagination page={searchedHotels?.pagination.page || 1} totalPages={searchedHotels?.pagination.totalPages || 1} onPageChange={(page)=>setPage(page)}  />
+   </div>
+   </>
   )
 }
