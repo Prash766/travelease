@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
@@ -9,6 +9,7 @@ import MyHotel from "./pages/MyHotels";
 
 import EditHotel from "./pages/EditHotel";
 import Search from "./pages/Search";
+import HotelPage from "./pages/HotelPage";
 
 function App() {
   const {isVerified} = useAppContext()
@@ -33,7 +34,7 @@ function App() {
             }
           />
          
-          {isVerified && <>
+          {isVerified ? <>
           <Route path="/add-hotel" element={
             <Layout showSearchBar={false} bgTransparent={false}>  
             <AddHotels/>
@@ -63,7 +64,15 @@ function App() {
               </Layout>
             }
           />
-          </>}
+            <Route
+            path="/hotels/:hotelId"
+            element={
+              <Layout showSearchBar={false} bgTransparent={false}>
+                <HotelPage/>
+              </Layout>
+            }
+          />
+          </>:(<Route path="*" element={<Navigate to='/login' replace/>} />)}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/*" element={<NotFound />} />
