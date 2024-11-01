@@ -2,6 +2,7 @@ import { MongooseError } from "mongoose";
 import Hotel, { HotelType } from "../models/hotel.model";
 import asyncHandler from "../utils/asyncHandler";
 import { uploadCloudinary } from "../utils/cloudinary";
+import { constructSearchQuery } from "../utils/helper";
 
 const addHotel = asyncHandler(async (req, res) => {
   try {
@@ -113,11 +114,28 @@ const updateHotelInfo = asyncHandler(async (req, res) => {
 
 const searchHotels = asyncHandler(async(req, res)=>{
  try {
+  const query= constructSearchQuery(req.query)
+  let sortOptions = {}
+  switch(req.query.sortOption){
+    case "starRating":
+      sortOptions={starRating : -1}
+      break;
+
+    case "price-high-to-low":
+      sortOptions= {pricePerNight: 1}
+      break;
+
+case "rating-low-to-high":
+    sortOptions = { starRating: 1 };
+    break;
+
+    
+  }
    const pageNo = req.query.page?.toString() || "1"
    const pageSize = 10
    const skip = (parseInt(pageNo) - 1)*pageSize
-   const hotels = await Hotel.find({}).skip(skip).limit(pageSize)
-   const total = await Hotel.countDocuments()
+   const hotels = await Hotel.find(query).sort(sortOptions).skip(skip).limit(pageSize)
+   const total = await Hotel.countDocuments(query)
 
    return res.status(200).json({
      success:true,
