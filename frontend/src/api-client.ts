@@ -79,12 +79,18 @@ export const validateToken = async () => {
 
 
 export type SearchParams = {
-  destination: string,
-  checkIn: string,
-  checkOut:string,
-  adultCount:string,
-  childCount:string,
-  page:string
+  destination?: string,
+  checkIn?: string,
+  checkOut?:string,
+  adultCount?:string,
+  childCount?:string,
+  page?:string,
+  facilities?: string[],
+  types?:string[],
+  stars?:string[],
+  maxPrice?:string,
+  minPrice?:string,
+  sortOption?:string
 
 }
  export const searchHotels= async(searchParams :SearchParams): Promise<HotelSearchResponse>=>{
@@ -94,6 +100,17 @@ export type SearchParams = {
   queryParams.append("checkOut" , searchParams.checkOut || "")
   queryParams.append("adultCount" , searchParams.adultCount || "")
   queryParams.append("childCount" , searchParams.childCount || "")
+  queryParams.append("maxPrice", searchParams.maxPrice || "");
+  queryParams.append("minPrice", searchParams.minPrice || "");
+  queryParams.append("sortOption", searchParams.sortOption || "");
+  queryParams.append("page" ,searchParams.page || "1" )
+
+  searchParams.facilities?.forEach((facility) =>
+    queryParams.append("facilities", facility)
+  );
+
+  searchParams.types?.forEach((type) => queryParams.append("types", type));
+  searchParams.stars?.forEach((star) => queryParams.append("stars", star));
 
 const res = await axiosClient(`/hotels/query/search?${queryParams}`)
 if(res.status!==200){
