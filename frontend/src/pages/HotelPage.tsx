@@ -1,29 +1,20 @@
-
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { CarTaxiFront, ChevronLeft, ChevronRight, HotelIcon, SpadeIcon, Star, Waves, Wifi } from 'lucide-react'
+import { HotelType } from '@prash766/shared-types/dist'
+import { useLocation } from 'react-router-dom'
 
-interface HotelProps {
-  name: string
-  location: string
-  type: string
-  rating: number
-  description: string
-  facilities: string[]
-  images: string[]
-}
-
-const Hotel: React.FC<HotelProps> = ({ name, location, type, rating, description, facilities, images }) => {
+const Hotel: React.FC<HotelType> = ({ name, city, country, description, starRating, facilities, type, imageUrls }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageUrls.length)
   }
 
   const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length)
+    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length)
   }
 
   useEffect(() => {
@@ -35,7 +26,7 @@ const Hotel: React.FC<HotelProps> = ({ name, location, type, rating, description
         clearInterval(intervalRef.current)
       }
     }
-  }, [isHovered, images.length])
+  }, [isHovered, imageUrls.length])
 
   const facilityIcons = {
     wifi: <Wifi className="w-5 h-5" />,
@@ -48,16 +39,16 @@ const Hotel: React.FC<HotelProps> = ({ name, location, type, rating, description
   return (
     <div className="mt-8 bg-white rounded-lg shadow-lg overflow-hidden">
       <div 
-        className="relative h-64 sm:h-80 md:h-96"
+        className="relative w-full h-0 pb-[50%] bg-gray-100" // 16:9 aspect ratio
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {images.map((image, index) => (
+        {imageUrls.map((image, index) => (
           <motion.img
             key={image}
             src={image}
             alt={`${name} - Image ${index + 1}`}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-contain"
             initial={{ opacity: 0 }}
             animate={{ opacity: index === currentImageIndex ? 1 : 0 }}
             transition={{ duration: 0.5 }}
@@ -80,7 +71,7 @@ const Hotel: React.FC<HotelProps> = ({ name, location, type, rating, description
         <div className="flex justify-between items-start mb-4">
           <div>
             <h2 className="text-2xl font-bold text-gray-800">{name}</h2>
-            <p className="text-gray-600">{location}</p>
+            <p className="text-gray-600">{city}, {country}</p>
           </div>
           <div className="flex items-center bg-blue-100 px-3 py-1 rounded-full">
             <span className="text-blue-800 font-semibold mr-1">{type}</span>
@@ -90,12 +81,10 @@ const Hotel: React.FC<HotelProps> = ({ name, location, type, rating, description
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
-              className={`w-5 h-5 ${
-                i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-              }`}
+              className={`w-5 h-5 ${i < starRating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
             />
           ))}
-          <span className="ml-2 text-gray-600">{rating} out of 5</span>
+          <span className="ml-2 text-gray-600">{starRating} out of 5</span>
         </div>
         <p className="text-gray-700 mb-4">{description}</p>
         <div className="mb-4">
@@ -118,23 +107,12 @@ const Hotel: React.FC<HotelProps> = ({ name, location, type, rating, description
 }
 
 export default function HotelPage() {
-  const hotelData: HotelProps = {
-    name: "Seaside Paradise Resort",
-    location: "Maldives",
-    type: "Luxury Resort",
-    rating: 4.8,
-    description: "Experience ultimate relaxation in our beachfront paradise. Enjoy crystal-clear waters, white sandy beaches, and world-class amenities.",
-    facilities: ["wifi", "pool", "restaurant", "spa", "parking"],
-    images: [
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
-      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
-    ]
-  }
+  const location = useLocation()
+  const hotel = location.state as HotelType
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Hotel {...hotelData} />
+      <Hotel {...hotel} />
     </div>
   )
 }

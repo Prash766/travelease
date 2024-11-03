@@ -1,25 +1,36 @@
-import { HotelType } from '@prash766/shared-types/dist';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CarTaxiFront, ChefHat, ChevronLeft, ChevronRight, GlassWater, ShoppingBag, Star, Wifi } from 'lucide-react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { HotelType } from "@prash766/shared-types/dist";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  CarTaxiFront,
+  ChefHat,
+  ChevronLeft,
+  ChevronRight,
+  GlassWater,
+  ShoppingBag,
+  Star,
+  Wifi,
+} from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const facilityIcons: { [key: string]: React.ElementType } = {
-  'Wi-Fi': Wifi,
-  'Parking': CarTaxiFront,
-  'Restaurant': ChefHat,
-  'Gym': ShoppingBag,
-  'Pool': GlassWater,
+  "Wi-Fi": Wifi,
+  Parking: CarTaxiFront,
+  Restaurant: ChefHat,
+  Gym: ShoppingBag,
+  Pool: GlassWater,
 };
 
 function HotelSearchCard({ hotel }: { hotel: HotelType }) {
   const [[currentImageIndex, direction], setPage] = useState([0, 0]);
 
   const paginate = (newDirection: number) => {
-    const nextIndex = (currentImageIndex + newDirection + hotel.imageUrls.length) % hotel.imageUrls.length;
+    const nextIndex =
+      (currentImageIndex + newDirection + hotel.imageUrls.length) %
+      hotel.imageUrls.length;
     setPage([nextIndex, newDirection]);
   };
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const imageVariants = {
     enter: (direction: number) => ({
@@ -35,7 +46,7 @@ function HotelSearchCard({ hotel }: { hotel: HotelType }) {
       opacity: 1,
       rotateY: 0,
       transition: {
-        type: 'spring',
+        type: "spring",
         stiffness: 300,
         damping: 30,
       },
@@ -96,7 +107,7 @@ function HotelSearchCard({ hotel }: { hotel: HotelType }) {
               whileTap={{ scale: 0.9 }}
               onClick={() => paginate(-1)}
               className="bg-white/90 text-gray-800 p-2 rounded-full hover:bg-white transition-colors"
-              style={{ transformOrigin: 'center' }}
+              style={{ transformOrigin: "center" }}
             >
               <ChevronLeft size={20} />
             </motion.button>
@@ -108,7 +119,7 @@ function HotelSearchCard({ hotel }: { hotel: HotelType }) {
               whileTap={{ scale: 0.9 }}
               onClick={() => paginate(1)}
               className="bg-white/90 text-gray-800 p-2 rounded-full hover:bg-white transition-colors"
-              style={{ transformOrigin: 'center' }}
+              style={{ transformOrigin: "center" }}
             >
               <ChevronRight size={20} />
             </motion.button>
@@ -118,7 +129,9 @@ function HotelSearchCard({ hotel }: { hotel: HotelType }) {
             {hotel.imageUrls.map((_, index) => (
               <motion.div
                 key={index}
-                className={`w-2 h-2 rounded-full ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'}`}
+                className={`w-2 h-2 rounded-full ${
+                  index === currentImageIndex ? "bg-white" : "bg-white/50"
+                }`}
                 initial={false}
                 animate={{ scale: index === currentImageIndex ? 1.2 : 1 }}
                 transition={{ duration: 0.2 }}
@@ -126,52 +139,64 @@ function HotelSearchCard({ hotel }: { hotel: HotelType }) {
             ))}
           </div>
         </div>
-        <div 
-            onClick={()=> navigate(`/hotels/${hotel._id}`)}
-
-        className="md:w-2/3 p-6 cursor-pointer">
+        <div
+          onClick={() => navigate(`/hotels/${hotel._id}`, {state:hotel })}
+          className="md:w-2/3 p-6 cursor-pointer"
+        >
           <div className="flex justify-between items-start mb-2">
-            <motion.h3 className="text-xl font-semibold" initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+            <motion.h3
+              className="text-xl font-semibold"
+              initial={false}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
               {hotel.name}
             </motion.h3>
             <div className="flex items-center">
               {[...Array(hotel.starRating)].map((_, i) => (
-                <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.1 }}>
+                <motion.div
+                  key={i}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: i * 0.1 }}
+                >
                   <Star size={16} className="text-yellow-400 fill-current" />
                 </motion.div>
               ))}
             </div>
           </div>
           <p className="text-gray-600 mb-2">{hotel.country}</p>
-          <p className="text-lg font-bold mb-2">₹{hotel.pricePerNight} per night</p>
+          <p className="text-lg font-bold mb-2">
+            ₹{hotel.pricePerNight} per night
+          </p>
           <p className="text-gray-700 mb-4 clamped-text">{hotel.description}</p>
           <div className="flex flex-wrap gap-3 mb-4">
-  {hotel.facilities.slice(0, 3).map((facility, index) => {
-    const FacilityIcon = facilityIcons[facility];
-    return (
-      <motion.div
-        key={facility}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.1 }}
-        className="bg-gray-100 p-2 rounded-full flex items-center gap-1"
-      >
-        {FacilityIcon && <FacilityIcon size={20} />}
-        <span>{facility}</span>
-      </motion.div>
-    );
-  })}
-  {hotel.facilities.length > 3 && (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3 }}
-      className="bg-gray-100 p-2 rounded-full flex items-center gap-1"
-    >
-      <span>+{hotel.facilities.length - 3} more</span>
-    </motion.div>
-  )}
-</div>
+            {hotel.facilities.slice(0, 3).map((facility, index) => {
+              const FacilityIcon = facilityIcons[facility];
+              return (
+                <motion.div
+                  key={facility}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-gray-100 p-2 rounded-full flex items-center gap-1"
+                >
+                  {FacilityIcon && <FacilityIcon size={20} />}
+                  <span>{facility}</span>
+                </motion.div>
+              );
+            })}
+            {hotel.facilities.length > 3 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-gray-100 p-2 rounded-full flex items-center gap-1"
+              >
+                <span>+{hotel.facilities.length - 3} more</span>
+              </motion.div>
+            )}
+          </div>
 
           <motion.button
             className="bg-indigo-600 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition-colors"
