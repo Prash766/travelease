@@ -76,8 +76,8 @@ const Pagination = ({ page, totalPages, onPageChange }: Props) => {
       </div>
       <button
         className="p-2 rounded-md bg-white border border-gray-300 text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        onClick={() => onPageChange(page + 1)}
-        disabled={page === totalPages}
+        onClick={() => onPageChange(Number(page) + 1)}
+        disabled={Number(page) === totalPages}
         aria-label="Next page"
       >
         <ChevronRight className="h-5 w-5" />

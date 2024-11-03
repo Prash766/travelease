@@ -45,7 +45,7 @@ const SearchBar = ({ bgTransparent }: { bgTransparent: Boolean }) => {
     <motion.div
       ref={searchRef}
       className={`w-full ${bgTransparent ? "" : "mt-24"} z-10 ${
-        isSticky ? "sticky top-0 z-50" : ""
+        isSticky ? "sticky top-0 z-50 bg-white shadow-lg" : ""
       }`}
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}

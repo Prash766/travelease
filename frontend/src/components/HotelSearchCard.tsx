@@ -2,6 +2,7 @@ import { HotelType } from '@prash766/shared-types/dist';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CarTaxiFront, ChefHat, ChevronLeft, ChevronRight, GlassWater, ShoppingBag, Star, Wifi } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const facilityIcons: { [key: string]: React.ElementType } = {
   'Wi-Fi': Wifi,
@@ -18,6 +19,7 @@ function HotelSearchCard({ hotel }: { hotel: HotelType }) {
     const nextIndex = (currentImageIndex + newDirection + hotel.imageUrls.length) % hotel.imageUrls.length;
     setPage([nextIndex, newDirection]);
   };
+  const navigate = useNavigate()
 
   const imageVariants = {
     enter: (direction: number) => ({
@@ -54,7 +56,7 @@ function HotelSearchCard({ hotel }: { hotel: HotelType }) {
 
   return (
     <motion.div
-      className="bg-white rounded-lg shadow-md overflow-hidden mb-6 hover:shadow-xl transition-shadow duration-300"
+      className="bg-white rounded-lg  shadow-md overflow-hidden mb-6 hover:shadow-xl transition-shadow duration-300"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -124,7 +126,10 @@ function HotelSearchCard({ hotel }: { hotel: HotelType }) {
             ))}
           </div>
         </div>
-        <div className="md:w-2/3 p-6">
+        <div 
+            onClick={()=> navigate(`/hotels/${hotel._id}`)}
+
+        className="md:w-2/3 p-6 cursor-pointer">
           <div className="flex justify-between items-start mb-2">
             <motion.h3 className="text-xl font-semibold" initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
               {hotel.name}
