@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
@@ -34,7 +34,7 @@ function App() {
             }
           />
          
-          {isVerified ? <>
+          {isVerified && <>
           <Route path="/add-hotel" element={
             <Layout showSearchBar={false} bgTransparent={false}>  
             <AddHotels/>
@@ -48,14 +48,7 @@ function App() {
               </Layout>
             }
           />
-              <Route
-            path="/search"
-            element={
-              <Layout showSearchBar={false} bgTransparent={false}>
-                <Search/>
-              </Layout>
-            }
-          />
+            
             <Route
             path="/edit-hotel/:hotelId"
             element={
@@ -64,7 +57,19 @@ function App() {
               </Layout>
             }
           />
+         
+          </>
+            // <Route path="" element={<Navigate to='/login' replace/>} />)
+          }
             <Route
+            path="/search"
+            element={
+              <Layout showSearchBar={false} bgTransparent={false}>
+                <Search/>
+              </Layout>
+            }
+          />
+             <Route
             path="/hotels/:hotelId"
             element={
               <Layout showSearchBar={false} bgTransparent={false}>
@@ -72,7 +77,6 @@ function App() {
               </Layout>
             }
           />
-          </>:(<Route path="*" element={<Navigate to='/login' replace/>} />)}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/*" element={<NotFound />} />
