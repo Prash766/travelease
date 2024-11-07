@@ -118,3 +118,12 @@ if(res.status!==200){
 }
 return res.data
  }
+
+ export const fetchHotelById = async(hotelId : string)=>{
+  const res = await axiosClient.get(`/hotels/get/${hotelId}`)
+  if(res.status!==200){
+    throw new Error(res.data.message)
+  }
+  return res.data
+  
+ }
