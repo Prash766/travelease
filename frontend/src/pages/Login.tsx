@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loader, PlaneTakeoff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as apiClient from "../api-client";
@@ -14,6 +14,7 @@ export type SignInForm = {
 
 export default function Login() {
   const { showToast } = useAppContext();
+  const location = useLocation()
   const queryClient = useQueryClient()
   const navigate = useNavigate();
   const { register, handleSubmit, formState: {errors} } = useForm<SignInForm>();
@@ -25,7 +26,7 @@ export default function Login() {
       })
 
       showToast({ message: "Logged In Successfully", type: "SUCCESS" });
-      navigate("/", { replace: true });
+      navigate(location.state?.from?.pathname || "/", { replace: true });
     },
     onError: (error: AxiosError) => {
       if (error.response && error.response.data) {
