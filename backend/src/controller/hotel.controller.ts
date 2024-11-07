@@ -3,6 +3,7 @@ import Hotel, { HotelType } from "../models/hotel.model";
 import asyncHandler from "../utils/asyncHandler";
 import { uploadCloudinary } from "../utils/cloudinary";
 import { constructSearchQuery } from "../utils/helper";
+import ApiError from "../utils/ApiError";
 
 const addHotel = asyncHandler(async (req, res) => {
   try {
@@ -160,5 +161,26 @@ case "rating-low-to-high":
 })
 
 
+const getHotelById = asyncHandler(async(req, res)=>{
+  const hotelId = req.params.hotelId.toString()
 
-export { addHotel, getHotelsOfUser, getHotelInfo, updateHotelInfo, searchHotels };
+try {
+  const hotel= await Hotel.findById(hotelId)
+  if(!hotel){
+    throw new ApiError("Invalid Hotel Id", 400)
+  }
+
+  return res.status(200).json({
+    success: true,
+    hotel
+  })
+} catch (error : any) {
+  console.log(error)
+  throw new ApiError(`${error.message || "Invalid Id"}` , 400)
+}
+
+})
+
+
+
+export { addHotel, getHotelsOfUser, getHotelInfo, updateHotelInfo, searchHotels , getHotelById };
