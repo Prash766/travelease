@@ -24,16 +24,28 @@ const SearchContext = React.createContext<SearchContext | undefined>(undefined);
 export const SearchContextProvider = ({
   children,
 }: SearchContextProviderProps) => {
-  const [destination, setDestination] = useState<string>("");
-  const [checkIn, setCheckIn] = useState<Date>(new Date());
-  const [checkOut, setCheckOut] = useState<Date>(() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 1); // Add 1 day
-    return date;
+  const [destination, setDestination] = useState<string>(
+    () => sessionStorage.getItem("destination") || ""
+  );
+  const [checkIn, setCheckIn] = useState<Date>(() => {
+    const savedDate = sessionStorage.getItem("checkIn");
+    return savedDate ? new Date(savedDate) : new Date();
   });
-  const [adultCount, setAdultCount] = useState<number>(1);
-  const [childCount, setChildCount] = useState<number>(0);
-  const [hotelId, setHotelId] = useState<string>("");
+  
+  const [checkOut, setCheckOut] = useState<Date>(() => {
+    const savedDate = sessionStorage.getItem("checkOut");
+    if (savedDate) {
+      return new Date(savedDate); 
+    } else {
+      const date = new Date();
+      date.setDate(date.getDate() + 1); 
+      return date;
+    }
+  });
+  
+  const [adultCount, setAdultCount] = useState<number>(()=>parseInt(sessionStorage.getItem('adultCount') as string) || 1);
+  const [childCount, setChildCount] = useState<number>(()=>parseInt(sessionStorage.getItem('childCount') as string) || 0);
+  const [hotelId, setHotelId] = useState<string>(()=>sessionStorage.getItem("hoteId")|| "");
 
   const saveSearchValues = (
     destination: string,
@@ -51,6 +63,12 @@ export const SearchContextProvider = ({
     if (hotelId) {
       setHotelId(hotelId);
     }
+    sessionStorage.setItem("destination" , destination)
+    sessionStorage.setItem("checkIn" , checkIn.toISOString())
+    sessionStorage.setItem("checkOut" , checkOut.toISOString())
+    sessionStorage.setItem("adultCount" , adultCount.toString())
+    sessionStorage.setItem("childCount" , childCount.toString())
+
   };
 
   return (
