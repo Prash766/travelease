@@ -1,9 +1,10 @@
-import { AxiosError } from "axios";
+import  { AxiosError } from "axios";
 import axiosClient from "./axiosClient";
 import { SignUpFormData } from "./pages/SignUp";
 import { SignInForm } from "./pages/Login";
 import { Hotel } from "./pages/MyHotels";
-import {HotelSearchResponse} from '@prash766/shared-types/dist'
+import {HotelSearchResponse,  UserType, paymentIntentResposne} from '@prash766/shared-types/dist'
+import { BookingFormData } from "./pages/BookingPage";
 
 export const signUp = async (formData: SignUpFormData) => {
   const res = await axiosClient.post("/users/register", formData);
@@ -119,11 +120,41 @@ if(res.status!==200){
 return res.data
  }
 
- export const fetchHotelById = async(hotelId : string)=>{
+ export const fetchHotelById = async(hotelId : string) =>{
   const res = await axiosClient.get(`/hotels/get/${hotelId}`)
   if(res.status!==200){
     throw new Error(res.data.message)
   }
   return res.data
   
+ }
+
+
+ export const fetchUserDetails = async() :Promise<UserType>=>{
+  const res = await axiosClient.get('/users/me')
+  if(res.status!==200){
+    throw new Error(res.data.message)
+  }
+  return res.data.user
+ }
+
+ export const createPaymentIntent =async (hotelId:string , numberOfNights:string):Promise<paymentIntentResposne>=>{
+
+  const res = await axiosClient.post(`/hotels/${hotelId}/bookings/payment-intent`, {
+    numberOfNights
+  })
+  if(res.status!==200){
+    throw new Error(res.data.message)
+  }
+  return res.data
+ }
+
+
+ export const createBooking = async(formData:BookingFormData ) =>{
+  const res = await axiosClient.post(`/hotels/${formData.hotelId}/bookings`,{formData})
+  if(res.status!==200){
+    throw new Error(res.data.message|| "Error While Booking the Hotel")
+  }
+  return res.data
+
  }
