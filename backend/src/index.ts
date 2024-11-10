@@ -4,6 +4,8 @@ import connectDB from './db/db';
 import cookieParser from 'cookie-parser';
 import errorMiddleware from './middleware/error.middleware';
 import {v2 as cloudinary} from 'cloudinary'
+import Stripe from 'stripe'
+export const stripe =new Stripe(process.env.STRIPE_API_KEY as string)
 const app = express();
 
 app.use(cors({
