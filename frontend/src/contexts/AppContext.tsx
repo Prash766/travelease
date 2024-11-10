@@ -3,6 +3,10 @@ import { createContext, useContext } from "react";
 import * as apiClient from '../api-client'
 import React from "react";
 import { toast } from "sonner";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
+
+
+const STRIPE_PUB_KEY= import.meta.env.VITE_STRIPE_PUB_KEY||""
 
 type ToastMessage = {
   message: string;
@@ -12,9 +16,13 @@ type ToastMessage = {
 type AppContext = {
   showToast: (toastMessage: ToastMessage) => void;
   isVerified:boolean
+  stripePromise : Promise<Stripe | null>
+
 };
 
 const AppContext = createContext<AppContext | undefined>(undefined);
+const stripePromise = loadStripe(STRIPE_PUB_KEY)
+
 
 export const AppContextProvider = ({
   children,
@@ -37,7 +45,8 @@ export const AppContextProvider = ({
             toast.success(message.message);
           }
         },
-        isVerified: !isError
+        isVerified: !isError,
+        stripePromise
       }}
     >
       {children}
