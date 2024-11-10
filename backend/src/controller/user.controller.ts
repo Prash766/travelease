@@ -111,10 +111,23 @@ return res.status(200).json({
 })
 })
 
+const getUserDetails = asyncHandler(async(req , res)=>{
+  const userId = req.user
+  const user = await User.findById(userId).select("-password")
+  if(!user){
+    throw new ApiError("User not found" , 404)
+  }
+  return res.status(200).json({
+    success:true,
+    user 
+  })
+
+})
 
 export { 
     registerUser, 
     loginUser,
     authCheck,
-    logOutUser
+    logOutUser,
+    getUserDetails
  };

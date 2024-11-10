@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser , authCheck, logOutUser } from "../controller/user.controller";
+import { registerUser, loginUser , authCheck, logOutUser, getUserDetails } from "../controller/user.controller";
 import { check } from "express-validator";
 import { validateToken } from "../middleware/auth.middleware";
 
@@ -30,7 +30,7 @@ router
 router.route("/validate-token").get(validateToken , authCheck)
 router.route("/logout").get(validateToken , logOutUser)
 
-
+router.route("/me").get(validateToken , getUserDetails)
 
 
 export default router;
