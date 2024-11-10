@@ -1,4 +1,5 @@
-import mongoose, { Schema, StringSchemaDefinition } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import {BookingType} from '@prash766/shared-types/dist'
 export type HotelType = {
     _id:string,
     userId:string,
@@ -13,7 +14,47 @@ export type HotelType = {
     type:string,
     pricePerNight:number,
     imageUrls:string[],
+    bookings: BookingType
 }
+const BookingSchema = new Schema<BookingType>({
+    firstName :{
+        type:String,
+        required:true
+    },
+    lastName :{
+        type:String,
+        required:true
+    },
+    email :{
+        type:String,
+        required:true,
+        unique:true
+    },
+    adultCount :{
+        type:Number,
+        required:true
+    },
+    childCount :{
+        type:Number,
+        required:true
+    },
+    checkIn:{
+        type:Date,
+        required: true
+    },
+    checkOut:{
+        type:Date,
+        required: true
+    },
+    userId:{
+        type: String,
+        required:true,
+    },
+    totalCost:{
+        type: Number,
+        required:true
+    }
+})
 
 const HotelSchema= new Schema<HotelType>({
     userId:{
@@ -71,8 +112,7 @@ const HotelSchema= new Schema<HotelType>({
             required:true
         }
     ],
- 
-    
+    bookings: [BookingSchema]
 }, {timestamps:true})
 
 
