@@ -105,7 +105,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["dist/**/*"],              // Change this to include dist
+  "include": ["src/**/*"],  // Set this to your source folder
   "exclude": ["node_modules"] 
 
 }

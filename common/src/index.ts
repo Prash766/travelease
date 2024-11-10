@@ -14,6 +14,7 @@ export type HotelType = {
     imageUrls: string[]
     createdAt: string
     updatedAt: string
+    bookings : BookingType[]
   }
 
  export type HotelSearchResponse = {
@@ -24,4 +25,31 @@ export type HotelType = {
         totalPages: number
     }
 
+ }
+ export type UserType={
+    _id:string,
+    email:string,
+    password:string,
+    firstName:string,
+    lastName:string,
+ }
+
+ export type BookingType ={
+   _id:string,
+   userId:string,
+   firstName : string,
+   lastName: string,
+   email: string,
+   adultCount: number,
+   childCount : number
+   checkIn : Date
+   checkOut :Date
+   totalCost: number
+
+ }
+
+ export type paymentIntentResposne ={
+   paymentIntentId:string,
+   clientSecret :string,
+   totalPrice: number
  }
