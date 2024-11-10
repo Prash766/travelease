@@ -10,9 +10,10 @@ import MyHotel from "./pages/MyHotels";
 import EditHotel from "./pages/EditHotel";
 import Search from "./pages/Search";
 import HotelPage from "./pages/HotelPage";
+import BookingPage from "./pages/BookingPage";
 
 function App() {
-  const {isVerified} = useAppContext()
+  const { isVerified } = useAppContext();
   return (
     <>
       <BrowserRouter>
@@ -33,50 +34,64 @@ function App() {
               </Layout>
             }
           />
-         
-          {isVerified && <>
-          <Route path="/add-hotel" element={
-            <Layout showSearchBar={false} bgTransparent={false}>  
-            <AddHotels/>
-            </Layout>
-            }/>
-              <Route
-            path="/myHotels"
-            element={
-              <Layout showSearchBar={false} bgTransparent={false}>
-                <MyHotel/>
-              </Layout>
-            }
-          />
-            
-            <Route
-            path="/edit-hotel/:hotelId"
-            element={
-              <Layout showSearchBar={false} bgTransparent={false}>
-                <EditHotel/>
-              </Layout>
-            }
-          />
-         
-          </>
-            // <Route path="" element={<Navigate to='/login' replace/>} />)
-          }
-            <Route
-            path="/search"
-            element={
-              <Layout showSearchBar={false} bgTransparent={false}>
-                <Search/>
-              </Layout>
-            }
-          />
-             <Route
+          <Route
             path="/hotels/:hotelId"
             element={
               <Layout showSearchBar={false} bgTransparent={false}>
-                <HotelPage/>
+                <HotelPage />
               </Layout>
             }
           />
+
+          {
+            isVerified && (
+              <>
+                <Route
+                  path="/add-hotel"
+                  element={
+                    <Layout showSearchBar={false} bgTransparent={false}>
+                      <AddHotels />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/hotels/:hotelId/booking"
+                  element={
+                    <Layout showSearchBar={false} bgTransparent={false}>
+                      <BookingPage/>
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/myHotels"
+                  element={
+                    <Layout showSearchBar={false} bgTransparent={false}>
+                      <MyHotel />
+                    </Layout>
+                  }
+                />
+
+                <Route
+                  path="/edit-hotel/:hotelId"
+                  element={
+                    <Layout showSearchBar={false} bgTransparent={false}>
+                      <EditHotel />
+                    </Layout>
+                  }
+                />
+              </>
+            )
+            // <Route path="" element={<Navigate to='/login' replace/>} />)
+          }
+          <Route
+            path="/search"
+            element={
+              <Layout showSearchBar={false} bgTransparent={false}>
+                <Search />
+              </Layout>
+            }
+          />
+
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/*" element={<NotFound />} />
