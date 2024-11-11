@@ -11,6 +11,7 @@ import EditHotel from "./pages/EditHotel";
 import Search from "./pages/Search";
 import HotelPage from "./pages/HotelPage";
 import BookingPage from "./pages/BookingPage";
+import MyBookings from "./pages/MyBookings";
 
 function App() {
   const { isVerified } = useAppContext();
@@ -26,14 +27,7 @@ function App() {
               </Layout>
             }
           />
-          <Route
-            path="/myBookings"
-            element={
-              <Layout showSearchBar={true} bgTransparent={false}>
-                <h1 className="mt=80">BOOKING THE SITE</h1>
-              </Layout>
-            }
-          />
+      
           <Route
             path="/hotels/:hotelId"
             element={
@@ -62,6 +56,15 @@ function App() {
                     </Layout>
                   }
                 />
+                    <Route
+            path="/myBookings"
+            element={
+              <Layout showSearchBar={true} bgTransparent={false}>
+                <MyBookings/>
+              </Layout>
+            }
+          />
+          
                 <Route
                   path="/myHotels"
                   element={

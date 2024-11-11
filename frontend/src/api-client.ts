@@ -158,3 +158,13 @@ return res.data
   return res.data
 
  }
+
+
+ export const fetchMyBooking = async()=>{
+  const res = await axiosClient.get(`/hotels/myBookings`)
+  if(res.status!==200){
+    throw new Error("Unable to fetch Bookings");
+    
+  }
+  return res.data.results
+ }
