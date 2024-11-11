@@ -5,6 +5,7 @@ import {
   getHotelById,
   getHotelInfo,
   getHotelsOfUser,
+  getMyHotelBookings,
   hotelBooking,
   searchHotels,
   stripePaymentIntent,
@@ -85,5 +86,6 @@ router
   .post(validateToken, stripePaymentIntent);
 
 router.route("/:hotelId/bookings").post(validateToken, hotelBooking)
+router.route("/myBookings").get(validateToken, getMyHotelBookings)
 
 export default router;

@@ -264,6 +264,33 @@ const hotelBooking = asyncHandler(async (req, res) => {
 });
 
 
+const getMyHotelBookings = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  try {
+    const hotels = await Hotel.find({
+      bookings: { $elemMatch: { userId: user } },
+    });
+
+    const results = hotels.map((hotel) => {
+      const userBookings = (hotel.bookings as unknown as BookingType[]).filter(
+        (booking) => booking.userId.toString() === user.toString()
+      );
+
+      return {
+        ...hotel.toObject(),
+        bookings: userBookings,
+      };
+    });
+
+    return res.status(200).json({ success: true, results });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+
 export {
   addHotel,
   getHotelsOfUser,
@@ -272,5 +299,6 @@ export {
   searchHotels,
   getHotelById,
   stripePaymentIntent,
-  hotelBooking
+  hotelBooking,
+  getMyHotelBookings
 };
