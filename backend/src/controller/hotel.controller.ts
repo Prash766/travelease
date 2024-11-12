@@ -265,7 +265,7 @@ const hotelBooking = asyncHandler(async (req, res) => {
 
 
 const getMyHotelBookings = asyncHandler(async (req, res) => {
-  const user = req.user;
+  const user = req.user
 
   try {
     const hotels = await Hotel.find({
@@ -290,6 +290,29 @@ const getMyHotelBookings = asyncHandler(async (req, res) => {
   }
 });
 
+const getHotels = asyncHandler(async (req, res) => {
+  const hotels = await Hotel.aggregate([
+    {
+      $match: {
+        starRating: { $gte: 4 }
+      }
+    },
+    {
+      $sample: { size: 4 }
+    },
+    {
+      $sort: {
+        starRating: -1
+      }
+    }
+  ]);
+
+ return  res.status(200).json(hotels);
+});
+
+  
+    
+
 
 export {
   addHotel,
@@ -300,5 +323,6 @@ export {
   getHotelById,
   stripePaymentIntent,
   hotelBooking,
-  getMyHotelBookings
+  getMyHotelBookings,
+  getHotels
 };
