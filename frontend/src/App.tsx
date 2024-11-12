@@ -12,6 +12,7 @@ import Search from "./pages/Search";
 import HotelPage from "./pages/HotelPage";
 import BookingPage from "./pages/BookingPage";
 import MyBookings from "./pages/MyBookings";
+import HomePage from "./pages/HomePage";
 
 function App() {
   const { isVerified } = useAppContext();
@@ -23,7 +24,7 @@ function App() {
             path="/"
             element={
               <Layout showSearchBar={true} bgTransparent={true}>
-                <p>Home</p>
+                <HomePage/>
               </Layout>
             }
           />
