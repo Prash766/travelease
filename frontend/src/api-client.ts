@@ -3,7 +3,7 @@ import axiosClient from "./axiosClient";
 import { SignUpFormData } from "./pages/SignUp";
 import { SignInForm } from "./pages/Login";
 import { Hotel } from "./pages/MyHotels";
-import {HotelSearchResponse,  UserType, paymentIntentResposne} from '@prash766/shared-types/dist'
+import {HotelSearchResponse,  HotelType,  UserType, paymentIntentResposne} from '@prash766/shared-types/dist'
 import { BookingFormData } from "./pages/BookingPage";
 
 export const signUp = async (formData: SignUpFormData) => {
@@ -160,11 +160,19 @@ return res.data
  }
 
 
- export const fetchMyBooking = async()=>{
-  const res = await axiosClient.get(`/hotels/myBookings`)
+ export const fetchMyBooking = async(): Promise<HotelType[]>=>{
+  const res = await axiosClient.get(`/hotels/myhotels/bookings`)
   if(res.status!==200){
     throw new Error("Unable to fetch Bookings");
     
   }
   return res.data.results
+ }
+
+ export const allHotels = async():Promise<HotelType[]> =>{
+  const res = await axiosClient.get('/hotels/get')
+  if(res.status!==200){
+    throw new Error("Error Fetching the Hotels")
+  }
+  return res.data
  }
