@@ -1,6 +1,7 @@
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import Hero from "../components/Hero"
+import NewsletterSubscribe from "../components/NewsletterSubscribe"
 import SearchBar from "../components/SearchBar"
 
 interface PropTypes{
@@ -23,6 +24,7 @@ const Layout = ({children , bgTransparent , showSearchBar}:PropTypes) => {
       <div className="container mx-auto py-10 flex-1">
         {children}
       </div>
+      {bgTransparent ? <NewsletterSubscribe/> : null}
       <Footer/>
         
 
