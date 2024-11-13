@@ -297,8 +297,8 @@ const BookingPage: React.FC = () => {
                   <div className="text-lg font-semibold">
                     Total stay: {totalNights} nights
                   </div>
-                  <div className="text-2xl font-bold mt-6">
-                    Total: ${paymentIntentData?.totalPrice}
+                  <div className="text-2xl  font-bold mt-6">
+                    Total: ₹{paymentIntentData?.totalPrice}
                   </div>
                 </div>
               </div>
