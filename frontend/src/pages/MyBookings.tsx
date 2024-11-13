@@ -5,6 +5,7 @@ import * as apiClient from '../api-client';
 
 import { BookingType, HotelType } from '@prash766/shared-types/dist';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 
 type Props= {
     booking :BookingType,
@@ -85,6 +86,56 @@ const MyBookings: React.FC = () => {
         queryFn: apiClient.fetchMyBooking
     });
 
+    if(myHotels?.length===0) return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="text-center">
+        <svg
+          className="h-24 w-24 text-gray-400 mx-auto mb-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 7h8M8 11h8M8 15h4"
+          />
+        </svg>
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">No Bookings Found</h1>
+        <p className="text-gray-600 mb-8 max-w-md mx-auto">
+          It looks like you haven't made any bookings yet. Ready to plan your next adventure?
+        </p>
+        <Link
+          to="/search"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          <svg
+            className="mr-2 h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          Start Exploring
+        </Link>
+      </div>
+    </div>
+    )
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
