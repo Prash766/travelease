@@ -18,7 +18,7 @@ const BookingCard = ({ booking, hotel }: Props) => {
     const isPastBooking = isAfter(new Date(), checkOutDate);
   
     return (
-      <div className={`bg-white rounded-lg shadow-md p-6 mb-4 ${isPastBooking ? 'opacity-50' : ''}`}>
+      <div className={`bg-white rounded-lg min-w-full shadow-md p-6 mb-4 ${isPastBooking ? 'opacity-50' : ''}`}>
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
             <MapPin className="w-5 h-5 mr-2 text-gray-500" />
