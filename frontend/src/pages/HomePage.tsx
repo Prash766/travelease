@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {  Star, TrendingUp, Shield, Globe, CreditCard } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import * as apiClient from '../api-client'
+import PopularDestinationsSkeleton from '../skeletons/PopularDestinationsSkeleton'
+import { useNavigate } from 'react-router-dom'
 
 const carouselItems = [
   {
@@ -23,26 +25,28 @@ const carouselItems = [
     description: "Experience the magic of white-washed buildings and breathtaking sunsets."
   },
   {
-    type: 'hotel',
-    name: "Mountain Lodge",
-    location: "Swiss Alps",
-    image: "https://images.unsplash.com/photo-1601048543428-e1c0c41f5f18?auto=format&fit=crop&w=1200&q=80",
-    rating: 4.8,
-    price: "$350/night"
+    type: 'destination',
+    name: "KedarNath Yatra",
+    location: "Uttrakhand",
+    description: "Embark on a spiritual journey to the sacred Kedarnath Temple, located amidst the breathtaking landscapes of the Garhwal Himalayas.",
+    image: "https://imgs.search.brave.com/QtZlS8YYJRll2llpm8aJ_Wl8anewGb79U4-ilKsHJSk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQva2VkYXJuYXRo/LTRrLTlwZDZjODRm/amxkeWVuamcuanBn",
+ 
   },
   {
     type: 'destination',
-    name: "Kyoto",
-    location: "Japan",
-    image: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1200&q=80",
-    description: "Immerse yourself in the rich culture and stunning temples of ancient Japan."
+    name: "Leh Ladakh",
+    location: "Ladakh",
+    image: "https://as2.ftcdn.net/v2/jpg/00/86/93/13/1000_F_86931350_yys0clXOBmAZLq2cKQwoy0cG9aS3qCDf.jpg",
+    description: "Explore the mesmerizing landscapes of Leh-Ladakh, a region known for its rugged beauty and tranquil charm"
   },
   {
-    type: 'review',
-    name: "Emily R.",
-    location: "New York, USA",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=1200&q=80",
-    quote: "TravelVerse made planning my dream vacation a breeze. The personalized recommendations were spot on!"
+    type: 'hotel',
+    name: "Hotel Apollo ",
+    location: "Himachal Pradesh",
+    image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/46/47/66/getlstd-property-photo.jpg?w=1200&h=-1&s=1",
+    rating:  4.8,
+    price : "₹4500/night"
+
   }
 ]
 
@@ -57,12 +61,13 @@ const features = [
 function HomePage() {
 
   const [currentIndex, setCurrentIndex] = useState(0)
+  const navigate = useNavigate()
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % carouselItems.length)
   }
 
-  const {data:fetchedHotels} = useQuery({
+  const {data:fetchedHotels , isLoading} = useQuery({
     queryKey:['fetchedHighestRatedHotels'],
     queryFn:apiClient.allHotels
   })
@@ -72,6 +77,7 @@ function HomePage() {
     const timer = setInterval(nextSlide, 5000)
     return () => clearInterval(timer)
   }, [])
+  
 
   return (
     <main className="bg-white py-16">
@@ -155,16 +161,6 @@ function HomePage() {
                       {carouselItems[currentIndex].description}
                     </motion.p>
                   )}
-                  {carouselItems[currentIndex].type === 'review' && (
-                    <motion.p
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.4 }}
-                      className="text-lg italic"
-                    >
-                      "{carouselItems[currentIndex].quote}"
-                    </motion.p>
-                  )}
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -172,11 +168,15 @@ function HomePage() {
         </section>
 
         {/* Popular Destinations Section */}
-        <section className="mb-24">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Popular Destinations</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+         
+           <section className="mb-24">
+           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Popular Destinations</h2>
+           {isLoading ? <PopularDestinationsSkeleton/> : (
+            <div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 cursor-pointer">
             {fetchedHotels?.map((hotel, index) => (
               <motion.div
+              onClick={()=>navigate(`hotels/${hotel._id}`)}
                 key={hotel.name}
                 className="bg-white rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl"
                 initial={{ opacity: 0, y: 50 }}
@@ -200,7 +200,10 @@ function HomePage() {
               </motion.div>
             ))}
           </div>
-        </section>
+           )}
+           
+         </section>
+      
 
         {/* Featured Experiences Section */}
         <section className="mb-24">
