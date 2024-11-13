@@ -185,6 +185,7 @@ const SearchBar = ({ bgTransparent }: { bgTransparent: Boolean }) => {
           </div>
           <div className="flex-grow min-w-[100px]">
             <button
+            onClick={handleSubmit}
               type="submit"
               className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition-colors mt-6"
             >
