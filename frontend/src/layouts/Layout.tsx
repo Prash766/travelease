@@ -21,7 +21,7 @@ const Layout = ({children , bgTransparent , showSearchBar}:PropTypes) => {
       showSearchBar?<SearchBar bgTransparent={bgTransparent}/>: null
 
      }
-      <div className="contaie mx-auto py-10 flex-1">
+      <div className="contaier mx-auto py-10 flex-1">
         {children}
       </div>
       {bgTransparent ? <NewsletterSubscribe/> : null}
