@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import connectDB from './db/db';
 import cookieParser from 'cookie-parser';
@@ -26,6 +26,14 @@ app.use(cookieParser());
     });
     
 connectDB()
+
+app.get('/', (req:Request, res:Response)=>{
+  res.json({
+   success:true,
+   message:"Hello there endpoint hit successful"
+ })
+ 
+})
 
 
 import UserRouter from './routes/user.routes';
