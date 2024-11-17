@@ -48,7 +48,7 @@ router
   );
 
 router.route("/").get(validateToken, getHotelsOfUser);
-router.route("/get").get(validateToken, getHotels)
+router.route("/get").get(getHotels)
 router.route("/:id").get(validateToken, getHotelInfo);
 router
   .route("/edit/:id")
