@@ -13,7 +13,7 @@ const carouselItems = [
     location: "Maldives",
     image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
     rating: 4.9,
-    price: "$500/night"
+    price: "₹5000/night"
   },
   {
     type: 'destination',
@@ -208,9 +208,9 @@ function HomePage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Featured Experiences</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: "Culinary Tour in Rome", image: "https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?auto=format&fit=crop&w=800&q=80", price: "$129" },
-              { title: "Scuba Diving in Great Barrier Reef", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80", price: "$299" },
-              { title: "Northern Lights Expedition", image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=800&q=80", price: "$499" },
+              { title: "Culinary Tour in Rome", image: "https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?auto=format&fit=crop&w=800&q=80", price: "₹12999" },
+              { title: "Scuba Diving in Great Barrier Reef", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80", price: "₹29999" },
+              { title: "Northern Lights Expedition", image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=800&q=80", price: "₹49999" },
             ].map((experience, index) => (
               <motion.div
                 key={experience.title}
